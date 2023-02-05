@@ -1,9 +1,11 @@
 'use strict';
 
+// テトロミノの落ちるスピード
+let game_speed = 300;
+
 // フィールドサイズ
 const FIELD_COL = 10;
 const FIELD_ROW = 20;
-
 
 // ブロック一つのサイズ(px)
 const BLOCK_SIZE = 30;
@@ -36,12 +38,13 @@ let tetro = [
 let tetro_x = 0;
 let tetro_y = 0;
 
-// フィールド本体
+// フィールドの中身
 let field = [];
 
 init(); // 初期化
 drawAll(); // 描画
 
+setInterval(dropTetro, game_speed);
 
 // 初期化
 function init() {
@@ -93,7 +96,7 @@ function drawAll() {
 
 // ブロックの衝突判定
 function checkMove(mx, my, newTetro) {
-  if(newTetro === undefined) newTetro = tetro;
+  if (newTetro === undefined) newTetro = tetro;
 
   for (let y = 0; y < TETRO_SIZE; y++) {
     for (let x = 0; x < TETRO_SIZE; x++) {
@@ -102,11 +105,13 @@ function checkMove(mx, my, newTetro) {
 
       if (newTetro[y][x]) {
         // テトロミノのフィールドスペースを制限
-        if (field[ny][nx] ||
+        if (
           ny < 0 ||
           nx < 0 ||
           ny >= FIELD_ROW ||
-          nx >= FIELD_COL) {
+          nx >= FIELD_COL ||
+          field[ny][nx]
+          ) {
           return false
         };
       }
@@ -122,15 +127,38 @@ function rotate() {
   for (let y = 0; y < TETRO_SIZE; y++) {
     newTetro[y] = [];
     for (let x = 0; x < TETRO_SIZE; x++) {
-      console.log("tetro-size: " +  (TETRO_SIZE - x-1) + " / y: " + y)
+      console.log("tetro-size: " + (TETRO_SIZE - x - 1) + " / y: " + y)
       newTetro[y][x] = tetro[TETRO_SIZE - x - 1][y];
       console.log("y: " + y);
       console.log("x: " + x);
       console.log("tetro: " + tetro);
       console.log("newTetro: " + newTetro);
+      console.log("ーーーーーーーーーーーーーーーーーーー");
     }
   }
   return newTetro;
+}
+
+// 衝突時はテトロミノを固定
+function fixTetro() {
+  for (let y = 0; y < TETRO_SIZE; y++) {
+    for (let x = 0; x < TETRO_SIZE; x++) {
+      if (tetro[y][x]) {
+        field[tetro_y + y][tetro_x + x] = 1;
+      }
+    }
+  }
+}
+
+// テトロミノの落下処理
+function dropTetro() {
+  if (checkMove(0, 1)) tetro_y++;
+  else {
+    fixTetro();
+    tetro_x = 0;
+    tetro_y = 0;
+  }
+  drawAll();
 }
 
 // キーボードが押された時の処理
@@ -152,7 +180,7 @@ document.onkeydown = (e) => {
     case " ":
       let newTetro = rotate();
       // 回転できるかチェック
-      if(checkMove(0, 0, newTetro)) tetro = newTetro;
+      if (checkMove(0, 0, newTetro)) tetro = newTetro;
       break;
     case "Enter":
       break;
