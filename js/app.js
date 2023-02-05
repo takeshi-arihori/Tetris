@@ -27,8 +27,8 @@ can.style.border = "5px solid #555"; // fieldの線
 // テトロミノ本体
 let tetro = [
   [0, 0, 0, 0],
-  [1, 1, 0, 0],
-  [0, 1, 1, 0],
+  [0, 0, 0, 0],
+  [1, 1, 1, 1],
   [0, 0, 0, 0]
 ];
 
@@ -91,15 +91,17 @@ function drawAll() {
   }
 }
 
-function checkMove(mx, my) {
+// ブロックの衝突判定
+function checkMove(mx, my, newTetro) {
+  if(newTetro === undefined) newTetro = tetro;
+
   for (let y = 0; y < TETRO_SIZE; y++) {
     for (let x = 0; x < TETRO_SIZE; x++) {
       let nx = tetro_x + mx + x;
       let ny = tetro_y + my + y;
-      console.log("mx : " + mx + " / x: " + x + " / nx: " + nx);
-      console.log("my : " + my + " / y: " + y + " / ny: " + ny);
-      if (tetro[y][x]) {
-        // ブロックの制限
+
+      if (newTetro[y][x]) {
+        // テトロミノのフィールドスペースを制限
         if (field[ny][nx] ||
           ny < 0 ||
           nx < 0 ||
@@ -113,7 +115,25 @@ function checkMove(mx, my) {
   return true;
 }
 
-// キーボード入力でテトロミノを動作させる
+// テトロミノの回転
+function rotate() {
+  let newTetro = [];
+
+  for (let y = 0; y < TETRO_SIZE; y++) {
+    newTetro[y] = [];
+    for (let x = 0; x < TETRO_SIZE; x++) {
+      console.log("tetro-size: " +  (TETRO_SIZE - x-1) + " / y: " + y)
+      newTetro[y][x] = tetro[TETRO_SIZE - x - 1][y];
+      console.log("y: " + y);
+      console.log("x: " + x);
+      console.log("tetro: " + tetro);
+      console.log("newTetro: " + newTetro);
+    }
+  }
+  return newTetro;
+}
+
+// キーボードが押された時の処理
 document.onkeydown = (e) => {
 
   switch (e.key) {
@@ -129,9 +149,12 @@ document.onkeydown = (e) => {
     case "ArrowDown":
       if (checkMove(0, 1)) tetro_y++;
       break;
-    case "Enter":
+    case " ":
+      let newTetro = rotate();
+      // 回転できるかチェック
+      if(checkMove(0, 0, newTetro)) tetro = newTetro;
       break;
-    case "":
+    case "Enter":
       break;
   }
   // 処理後にもう一度全体を表示
