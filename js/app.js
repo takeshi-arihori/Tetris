@@ -26,20 +26,73 @@ can.width = SCREEN_W;
 can.height = SCREEN_H;
 can.style.border = "5px solid #555"; // fieldの線
 
-// テトロミノ本体
-let tetro = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [1, 1, 1, 1],
-  [0, 0, 0, 0]
+
+// テトロミノの種類
+const TETRO_TYPES = [
+  [],             // 0. 空
+
+  [               // 1. I
+    [0, 0, 0, 0],
+    [1, 1, 1, 1],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+  ],
+  [               // 2. L
+    [0, 1, 0, 0],
+    [0, 1, 0, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0]
+  ],
+  [               // 3. J
+    [0, 0, 1, 0],
+    [0, 0, 1, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0]
+  ],
+  [               // 4. T
+    [0, 1, 0, 0],
+    [0, 1, 1, 0],
+    [0, 1, 0, 0],
+    [0, 0, 0, 0]
+  ],
+  [               // 5. O
+    [0, 0, 0, 0],
+    [0, 1, 1, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0]
+  ],
+  [               // 6. Z
+    [0, 0, 0, 0],
+    [1, 1, 0, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0]
+  ],
+  [               // 7. S
+    [0, 0, 0, 0],
+    [0, 1, 1, 0],
+    [1, 1, 0, 0],
+    [0, 0, 0, 0]
+  ],
 ];
 
+// テトロミノの落下スタート地点
+const START_X = FIELD_COL / 2 - TETRO_SIZE / 2;
+const START_Y = 0;
+
+// テトロミノ本体
+let tetro;
+
 // テトロミノの座標
-let tetro_x = 0;
-let tetro_y = 0;
+let tetro_x = START_X;
+let tetro_y = START_Y;
+// テトロミノの形
+let tetro_type;
 
 // フィールドの中身
 let field = [];
+
+tetro_type = Math.floor(Math.random() * (TETRO_TYPES.length - 1)) + 1;
+tetro = TETRO_TYPES[tetro_type];
 
 init(); // 初期化
 drawAll(); // 描画
@@ -111,7 +164,7 @@ function checkMove(mx, my, newTetro) {
           ny >= FIELD_ROW ||
           nx >= FIELD_COL ||
           field[ny][nx]
-          ) {
+        ) {
           return false
         };
       }
@@ -150,13 +203,17 @@ function fixTetro() {
   }
 }
 
-// テトロミノの落下処理
+// テトロミノの落下時に行う処理
 function dropTetro() {
   if (checkMove(0, 1)) tetro_y++;
   else {
+    // テトロミノが衝突した時の処理
     fixTetro();
-    tetro_x = 0;
-    tetro_y = 0;
+    // 次のテトロミノの処理
+    tetro_type = Math.floor(Math.random() * (TETRO_TYPES.length - 1)) + 1;
+    tetro = TETRO_TYPES[tetro_type];
+    tetro_x = START_X;
+    tetro_y = START_Y;
   }
   drawAll();
 }
