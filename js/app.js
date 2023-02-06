@@ -1,10 +1,10 @@
 'use strict';
 
 // テトロミノの落ちるスピード
-let game_speed = 700;
+let game_speed = 800;
 
 // ゲームスピード設定 <<<<<<<<<<<<<<-------------------------
-let speed = 400;
+let speed = 700;
 
 // フィールドサイズ
 const FIELD_COL = 10;
@@ -20,6 +20,8 @@ const SCREEN_H = BLOCK_SIZE * FIELD_ROW;
 // テトロミノのサイズ
 const TETRO_SIZE = 4;
 
+// 背景色の変更
+// document.body.style.background = url('/img/mountain-fantasy.jpg');
 
 // キャンバスAPIを取得
 let can = document.getElementById("can");
@@ -89,11 +91,11 @@ const TETRO_TYPES = [
     [1, 1, 0, 0],
     [0, 0, 0, 0]
   ],
-  [               // 8. <
+  [               // 8. ..
     [0, 0, 0, 0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0],
-    [0, 0, 1, 0]
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 1, 1, 0]
   ],
 ];
 
@@ -107,16 +109,23 @@ blImage = new Image();
 blImage.src = "/img/mountain-fantasy.jpg"; // ここにimage追加
 
 // 効果音 <<<<<<<<<<<<<<<<<-----------------------------
-let main_sound = "/music/Tetris-Theme-Tetris-Soundtrack.mp3";
-// const MUSIC = new Audio(main_sound); // オーディオ追加
-const ROTATE_SOUND = new Audio(""); // オーディオ追加
-const STACK_SOUND = new Audio(""); // オーディオ追加
-const DELETE_SOUND = new Audio(""); // オーディオ追加
 
+const MUSIC = new Audio("/music/Tetris-Theme-Tetris-Soundtrack (1).mp3");
+const ROTATE_SOUND = new Audio("/music/ブロックを90度回した時の音.mp3");
+const STACK_SOUND = new Audio("/music/下キーを押した時の音.mp3");
+const DELETE_SOUND = new Audio("/music/ブロックが消える時の音.mp3");
+const GAME_OVER = new Audio("/music/Game Over時の音.mp3")
 
 // テトロミノの落下スタート地点
 const START_X = FIELD_COL / 2 - TETRO_SIZE / 2;
 const START_Y = 0;
+
+// チェック用
+console.log("START_X(tetro_x) : " + START_X)
+console.log("START_Y(tetro_y) : " + START_Y)
+console.log("FIELD_COLUMN : " + FIELD_COL)
+console.log("FIELD_ROW : " + FIELD_ROW)
+console.log("TETRO_SIZE : " + TETRO_SIZE)
 
 // テトロミノ本体
 let tetro;
@@ -151,6 +160,8 @@ const OFFSET_Y = 0;
 // initializeでスタート
 init();
 
+let body = document.getElementById("body");
+
 
 // 初期化
 function init() {
@@ -165,29 +176,13 @@ function init() {
   tetro_next = Math.floor(Math.random() * (TETRO_TYPES.length - 1)) + 1;
 
   // テトロをセットして描画開始
+  MUSIC.play();
   setTetro();
   drawAll();
   setInterval(dropTetro, game_speed - speed);
 
 }
 
-//
-function startTetris() {
-  let audio = document.createElement('audio');
-  document.body.appendChild(audio);
-  audio.style.width = '100%';
-  audio.style.height = 'auto';
-  audio.controls = true;
-  audio.volume = 0.8;
-
-  audio.src = main_sound;
-  audio.play();
-
-  audio.addEventListener('ended', () => {
-    audio.play();
-    index = 0;
-  });
-}
 
 // テトロをネクストで初期化
 function setTetro() {
@@ -255,6 +250,8 @@ function drawAll() {
   // GAME OVERの時に画面にGAME OVERと表示
   if (over) {
     let s = "GAME OVER";
+    GAME_OVER.play();
+    MUSIC.pause();
     con.font = "40px 'MS ゴシック'";
     let w = con.measureText(s).width;
     let x = SCREEN_W / 2 - w / 2;
@@ -347,7 +344,7 @@ function checkLine() {
   }
 
   if (lineCount) {
-    DELETE_SOUND.pause(); // <<<<<<<<<<<<<<<<<--------------- 後で効果音設定
+    DELETE_SOUND.pause();
     DELETE_SOUND.play();
     lines += lineCount;
     score += 100 * (2 ** (lineCount - 1));
@@ -364,9 +361,6 @@ function dropTetro() {
   if (checkMove(0, 1)) tetro_y++;
   // テトロミノが衝突した時の処理
   else {
-    // MUSIC PLAY
-    startTetris();
-
     fixTetro();
     // テトロミノのラインが揃ったかチェック
     checkLine();
@@ -399,7 +393,10 @@ document.onkeydown = (e) => {
     case " ":
       let newTetro = rotate();
       // 回転できるかチェック
-      if (checkMove(0, 0, newTetro)) tetro = newTetro;
+      if (checkMove(0, 0, newTetro)) {
+        tetro = newTetro;
+        ROTATE_SOUND.play();
+      }
       break;
     case "Enter":
       break;
