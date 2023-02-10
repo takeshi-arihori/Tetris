@@ -1,33 +1,45 @@
 'use strict';
 
-// テトロミノの落ちるスピード
-let game_speed = 700;
+// initialPageとmainPageを取得(GameStart時: initialPageがnoneになり、mainPageがd-blockになる)
+let initialPage = document.getElementById("initialPage");
+let mainPage = document.getElementById("mainPage");
 
-// ゲームスピード設定 <<<<<<<<<<<<<<-------------------------
-let speed = 400;
+
+// テトロミノの落ちるスピード
+let game_speed = 300;
 
 // フィールドサイズ
 const FIELD_COL = 10;
 const FIELD_ROW = 20;
 
 // ブロック一つのサイズ(px)
-const BLOCK_SIZE = 30;
+const BLOCK_SIZE = 25;
 
-// キャンバスサイズ (W300 * H600 のスクリーンサイズ)
+// キャンバスサイズ (W250 * H500 のスクリーンサイズ)
 const SCREEN_W = BLOCK_SIZE * FIELD_COL;
 const SCREEN_H = BLOCK_SIZE * FIELD_ROW;
 
 // テトロミノのサイズ
 const TETRO_SIZE = 4;
 
+// インターバル開始 or 一時停止
+let timeoutID;
+
 
 // キャンバスAPIを取得
-let can = document.getElementById("can");
-let con = can.getContext("2d")
+// フィールドを描画
+let canvas = document.getElementById("canvas");
 
-can.width = SCREEN_W;
-can.height = SCREEN_H;
-can.style.border = "4px solid #555"; // fieldの線
+// mainの画面
+canvas.width = SCREEN_W;
+canvas.height = SCREEN_H;
+canvas.style.border = "3px solid #555"; // fieldの線
+
+
+// CanvasRenderingContext2D: 要素の描画面のための二次元描画コンテキストを取得
+let context = canvas.getContext("2d");
+
+
 
 // 各テトロミノの色
 const TETRO_COLORS = [
@@ -39,7 +51,6 @@ const TETRO_COLORS = [
   "#FD2",               // 黄色
   "#F44",               // 赤
   "#5B5",               // 緑
-  "#ade8f4",            // 黒
 ]
 
 
@@ -89,15 +100,15 @@ const TETRO_TYPES = [
     [1, 1, 0, 0],
     [0, 0, 0, 0]
   ],
-  [               // 8. <
-    [0, 0, 0, 0],
-    [0, 0, 1, 0],
-    [0, 1, 0, 0],
-    [0, 0, 1, 0]
-  ],
+  // [               // 8. ..
+  //   [0, 0, 0, 0],
+  //   [0, 0, 0, 0],
+  //   [0, 1, 1, 0],
+  //   [0, 0, 0, 0]
+  // ],
 ];
 
-// 画像 <<<<<<<<<<<<<<<<<<<<<-------------------------
+// ====================== 画像 ======================
 let bgImage;
 bgImage = new Image();
 bgImage.src = "/img/starry-sky-2675322_1280 (1).jpg" // ここにimage追加
@@ -106,12 +117,12 @@ let blImage;
 blImage = new Image();
 blImage.src = "/img/mountain-fantasy.jpg"; // ここにimage追加
 
-// 効果音 <<<<<<<<<<<<<<<<<-----------------------------
-let main_sound = "/music/Tetris-Theme-Tetris-Soundtrack.mp3";
-// const MUSIC = new Audio(main_sound); // オーディオ追加
-const ROTATE_SOUND = new Audio(""); // オーディオ追加
-const STACK_SOUND = new Audio(""); // オーディオ追加
-const DELETE_SOUND = new Audio(""); // オーディオ追加
+// ====================== 効果音 =========================
+const MUSIC = new Audio("/music/Opening_sound.mp3");
+const ROTATE_SOUND = new Audio("/music/Rotate時の音.mp3");
+const STACK_SOUND = new Audio("/music/下キーを押した時の音.mp3");
+const DELETE_SOUND = new Audio("/music/ブロックが消える時の音.mp3");
+const GAME_OVER = new Audio("/music/GAME OVER時の音.mp3");
 
 
 // テトロミノの落下スタート地点
@@ -148,11 +159,54 @@ const OFFSET_X = 0;
 const OFFSET_Y = 0;
 
 
-// initializeでスタート
-init();
+// ------------------- 画面遷移 ----------------------
+// d-blockをd-noneに変更
+function displayNone(ele) {
+  ele.classList.remove("d-block");
+  ele.classList.add("d-none");
+}
+
+// d-noneをd-blockに変更
+function displayBlock(ele) {
+  ele.classList.remove("d-none");
+  ele.classList.add("d-block");
+}
+
+// buttonをクリックするとGAME START
+document.getElementById("btn_start").addEventListener('click', () => {
+  // buttonがクリックされるとmainPageに切り替わる
+  displayNone(initialPage);
+  displayBlock(mainPage);
+  MUSIC.play();
+  init();
+  dropTetro();
+})
 
 
-// 初期化
+
+// ------------------ setInterval --------------------
+// ゲームの一時停止
+function setPauseTime(e) {
+  if (e.classList.contains("pause")) {
+    timeoutID = setInterval(dropTetro, game_speed);
+    e.classList.remove("pause");
+    MUSIC.play();
+  } else {
+    clearTimeout(timeoutID);
+    MUSIC.pause();
+    e.classList.add("pause");
+  }
+}
+
+// プレイ中の一時停止
+const pauseGame = document.getElementById("btn_pause").addEventListener('click', (e) => {
+  // pause buttonがクリックされたらsetTime()を呼び出す
+  setPauseTime(e.target);
+}, false);
+
+
+
+// 初期化(Game Start時だけ呼び出される)
 function init() {
   // フィールドのクリア
   for (let y = 0; y < FIELD_ROW; y++) {
@@ -167,27 +221,10 @@ function init() {
   // テトロをセットして描画開始
   setTetro();
   drawAll();
-  setInterval(dropTetro, game_speed - speed);
-
+  timeoutID = setInterval(dropTetro, game_speed);
 }
 
-//
-function startTetris() {
-  let audio = document.createElement('audio');
-  document.body.appendChild(audio);
-  audio.style.width = '100%';
-  audio.style.height = 'auto';
-  audio.controls = true;
-  audio.volume = 0.8;
 
-  audio.src = main_sound;
-  audio.play();
-
-  audio.addEventListener('ended', () => {
-    audio.play();
-    index = 0;
-  });
-}
 
 // テトロをネクストで初期化
 function setTetro() {
@@ -206,21 +243,19 @@ function drawBlock(x, y, c) {
   let px = x * BLOCK_SIZE;
   let py = y * BLOCK_SIZE;
 
-  // テトロミノを画像にする場合ここで処理を書く <<<<<<<<<<------------
-
-  con.fillStyle = TETRO_COLORS[c];
-  con.fillRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
-  con.strokeStyle = "white";
-  con.strokeRect(px, py, BLOCK_SIZE, BLOCK_SIZE)
+  context.fillStyle = TETRO_COLORS[c];
+  context.fillRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
+  context.strokeStyle = "white";
+  context.strokeRect(px, py, BLOCK_SIZE, BLOCK_SIZE)
 }
 
 
 // 全てを描画
 function drawAll() {
-  // con.clearRect(0, 0, SCREEN_W, SCREEN_H); // フィールドを表示する前にクリア/
+  // context.clearRect(0, 0, SCREEN_W, SCREEN_H); // フィールドを表示する前にクリア/
 
   // 背景を描画
-  con.drawImage(bgImage, -800, 0);
+  context.drawImage(bgImage, -800, 0);
 
   // フィールドを描画
   for (let y = 0; y < FIELD_ROW; y++) {
@@ -255,14 +290,16 @@ function drawAll() {
   // GAME OVERの時に画面にGAME OVERと表示
   if (over) {
     let s = "GAME OVER";
-    con.font = "40px 'MS ゴシック'";
-    let w = con.measureText(s).width;
+    context.font = "40px 'MS ゴシック'";
+    let w = context.measureText(s).width;
     let x = SCREEN_W / 2 - w / 2;
     let y = SCREEN_H / 2 - 20;
-    con.lineWidth = 4;
-    con.strokeText(s, x, y);
-    con.fillStyle = "white";
-    con.fillText(s, x, y);
+    context.lineWidth = 4;
+    context.strokeText(s, x, y);
+    context.fillStyle = "white";
+    context.fillText(s, x, y);
+    MUSIC.pause();
+    GAME_OVER.play();
   }
 }
 
@@ -347,7 +384,7 @@ function checkLine() {
   }
 
   if (lineCount) {
-    DELETE_SOUND.pause(); // <<<<<<<<<<<<<<<<<--------------- 後で効果音設定
+    DELETE_SOUND.pause();
     DELETE_SOUND.play();
     lines += lineCount;
     score += 100 * (2 ** (lineCount - 1));
@@ -364,9 +401,6 @@ function dropTetro() {
   if (checkMove(0, 1)) tetro_y++;
   // テトロミノが衝突した時の処理
   else {
-    // MUSIC PLAY
-    startTetris();
-
     fixTetro();
     // テトロミノのラインが揃ったかチェック
     checkLine();
@@ -393,13 +427,20 @@ document.onkeydown = (e) => {
     case "ArrowRight":
       if (checkMove(1, 0)) tetro_x++;
       break;
-    case "ArrowDown":
+    case "ArrowUp":
+      // ↑キーは一番下までブロックが一瞬で移動するようにする
       while (checkMove(0, 1)) tetro_y++;
       break;
+    case "ArrowDown":
+      if (checkMove(0, 1)) tetro_y++;
+      break;
+    case "Shift":
     case " ":
       let newTetro = rotate();
       // 回転できるかチェック
       if (checkMove(0, 0, newTetro)) tetro = newTetro;
+      ROTATE_SOUND.pause();
+      ROTATE_SOUND.play();
       break;
     case "Enter":
       break;
