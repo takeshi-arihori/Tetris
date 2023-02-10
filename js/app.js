@@ -1,4 +1,3 @@
-'use strict';
 
 // initialPageとmainPageを取得(GameStart時: initialPageがnoneになり、mainPageがd-blockになる)
 let initialPage = document.getElementById("initialPage");
@@ -252,10 +251,7 @@ function drawBlock(x, y, c) {
 
 // 全てを描画
 function drawAll() {
-  // context.clearRect(0, 0, SCREEN_W, SCREEN_H); // フィールドを表示する前にクリア/
-
-  // 背景を描画
-  context.drawImage(bgImage, -800, 0);
+  context.clearRect(0, 0, SCREEN_W, SCREEN_H); // フィールドを表示する前にクリア/
 
   // フィールドを描画
   for (let y = 0; y < FIELD_ROW; y++) {
