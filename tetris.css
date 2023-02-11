@@ -21,15 +21,16 @@ body {
   color: #f1faee;
 }
 
-.initial-header{
+.initial-header {
   padding: 1.1em 0;
   border-radius: 1.1em;
 }
 
-.initial-header h1 { /* <<<<<<<<<<<<<<<<<<<======================== faviconでgameplay説明 */
+.initial-header h1 {
+  /* <<<<<<<<<<<<<<<<<<<======================== faviconでgameplay説明 */
   font-size: 3em;
   text-align: center;
-  border: double 4px #f1faee;
+  border: double 4px #555;
 }
 
 .select-menu {
@@ -89,24 +90,31 @@ body {
 
 /* score_display */
 .main-header {
+  display: flex;
+  justify-content: space-between;
   padding: 1.2rem;
   margin-bottom: 1.5rem;
-  border: 3px solid #f1faee;
+  border: 3px solid #555;
   box-sizing: border-box;
 }
 
-.score-screen {
+.drawInfo {
   display: flex;
-}
-
-.score-screen li {
-  list-style-type: none;
-  width: 33.3333%;
-  margin: 1.2em 1.1em;
-  padding: 1.1em;
+  width: 100 / 3%;
+  margin: 1.2em 3em;
+  padding: 1.1em 3em;
   border: #457b9d solid 2px;
   border-radius: 1.2em;
   background-color: #f1faee;
+}
+
+.score-board{
+  display: flex;
+}
+
+.score-board li{
+  list-style-type: none;
+  padding: 0 4em;
 }
 
 /* main_display */
@@ -123,18 +131,8 @@ body {
   background-color: #000;
 }
 
-.btn-wrap {
-  position: relative;
-}
-
-.btn-list {
-  position: absolute;
-  bottom: 0;
-}
-
 /* onStopButton */
 #onStopBtn {
-  /* display: block; */
   padding: 1.1em;
   margin: 1.2em 1.1em;
   background-color: #1d3557;
@@ -143,9 +141,40 @@ body {
   border-radius: 1.2em;
 }
 
-
-#onStopBtn:hover{
+#onStopBtn:hover {
   background-color: #a8dadc;
   color: #1d3557;
   transform: scale(1.1);
+}
+
+/* ReStart・Reset */
+.btn-list {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  position: relative;
+}
+
+#onStopBtn{
+  align-items: center;
+  position: absolute;
+  bottom: 10px;
+  display: block;
+  margin: 0 1.1em;
+}
+
+/* resetBtn */
+#resetBtn {
+  padding: 0.7em;
+  margin: 1.2em 1.1em;
+  background-color: #1d3557;
+  color: #f1faee;
+  border: #457b9d double 5px;
+  border-radius: 1.1em;
+}
+
+#resetBtn:hover {
+  background-color: #ff0000;
+  color: #a8dadc;
+  transform: scale(1.2);
 }

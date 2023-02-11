@@ -73,21 +73,26 @@ let over = false;
 // ======================== Game play ========================
 
 // Game Speed
-let game_speed = 400;
+let game_speed = 800;
+
+// Level
+let level = 1;
 
 // スコア
-let score;
+let scoreCount = 0;
 
 // 消したライン数
-let lines = 0;
+let deleteLine = 0;
 
+// scoreList(消した列により得点が変動する)
+// level * 列のScore -> TotalScore
+const scoreList = {
+  1: 40, // 1列 : 40 Score
+  2: 100, // 2列 : 100 Score
+  3: 300, // 3列 : 300 Score
+  4: 1200, // 4列 : 1200 Score
+}
 
-
-
-// // TETRO_TYPESに格納しているテトロミノのindexをランダムで取得
-// tetro_t = Math.floor(Math.random() * (TETRO_TYPES.length - 1)) + 1;
-// // テトロミノを取得し変数に代入
-// tetro = TETRO_TYPES[tetro_t];
 
 // テトロミノの色
 const TETRO_COLORS = [
@@ -196,40 +201,6 @@ document.getElementById("gameStart").addEventListener('click', () => {
 
 
 
-
-// ゲームの一時停止
-// function setPauseTime(e) {
-//   if (e.classList.contains("pause")) {
-//     e.classList.remove("pause");
-
-//     /*
-//     GAME_START_SOUND.pause();
-//     */
-
-//     interval = setInterval(dropTetro, game_speed);
-//   } else {
-//     clearTimeout(interval);
-
-//     /*
-//     GAME_START_SOUND.pause();
-//     */
-
-//     e.classList.add("pause");
-//   }
-// }
-
-// let pauseGame = document.getElementById("btn-pause").addEventListener('click', (e) => {
-//   /*
-//   SELECT_MENU_SOUND.play();
-//   */
-
-//   // pause buttonがクリックされたらsetTime()を呼び出す
-//   setPauseTime(e.target);
-// }, false);
-
-
-
-
 /* ========================= setInterval ============================ */
 
 // intervalをclear
@@ -242,9 +213,11 @@ function onSetInterval() {
   interval = setInterval(dropTetro, game_speed);
 }
 
+
+let btn = document.getElementById("onStopBtn");
+
 // ReStart・Pause
 const onStopButton = () => {
-  let btn = document.getElementById("onStopBtn");
 
   // classList内にpauseがあればstopする
   if (btn.classList.contains("pause")) {
@@ -263,9 +236,19 @@ const onStopButton = () => {
 
 /* ================================ ReStart ============================== */
 
-const reset = () => {
-  clearInterval(interval);
-  init();
+const resetButton = () => {
+  // pauseしていなければ一旦pauseする
+  if (btn.classList.contains("pause")) {
+    onClearInterval();
+  }
+
+  let res = confirm("本当に中断しますか？？");
+  if(res) {
+    displayBlock(initial_screen);
+    displayNone(main_screen);
+  } else {
+    onSetInterval();
+  }
 }
 
 

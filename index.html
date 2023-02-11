@@ -32,17 +32,22 @@
   <!--=================== Main Screen (Displayed at game start) ====================-->
   <div id="main-screen">
     <header class="main-header wrapper">
-      <nav>
-        <ul class="score-screen">
-          <li>Score: </li>
-          <li>Level: </li>
-          <li>Next Stage: </li>
+      <div class="drawInfo">
+        <ul class="score-board">
+          <li id="level">LEVEL : 1</li>
+          <li id="score-count">SCORE : 0</li>
+          <li id="line-count">DELETE LINE : 0</li>
         </ul>
-      </nav>
+      </div>
+      <div>
+        <button id="resetBtn" type="button" class="reset" onclick="resetButton()">RESET</button>
+      </div>
     </header>
 
     <div class="main-contents wrapper">
-      <canvas id="canvas"></canvas>
+      <div>
+        <canvas id="canvas"></canvas>
+      </div>
       <div class="btn-list">
         <button id="onStopBtn" type="button" class="pause" onclick="onStopButton()">PAUSE</button>
       </div>
