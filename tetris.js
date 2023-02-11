@@ -89,8 +89,8 @@ let deleteLine = 0;
 const scoreList = {
   1: 40, // 1列 : 40 Score
   2: 100, // 2列 : 100 Score
-  3: 300, // 3列 : 300 Score
-  4: 1200, // 4列 : 1200 Score
+  3: 300, // 3列 : 250 Score
+  4: 1000, // 4列 : 700 Score
 }
 
 
@@ -154,6 +154,57 @@ const TETRO_TYPES = [
   ],
 ]
 
+
+/* =========================== Score Display ======================= */
+
+const screenTransition = () => {
+  let scoreBoardLevel = document.getElementById("level");
+  let scoreBoardCount = document.getElementById("score-count");
+  let scoreBoardLine = document.getElementById("line-count");
+
+  scoreBoardLevel.innerHTML = `LEVEL : ${level}`;
+  scoreBoardCount.innerHTML = `SCORE : ${scoreCount}`;
+  scoreBoardLine.innerHTML = `DELETE LINE : ${deleteLine}`;
+
+
+  const BASE_LEVEL = 2000; // このレベルを基準にlevel-up(game_speed)がupする
+  let currentLevel = level * BASE_LEVEL; // 現状のレベル
+  console.log("currentLevel --->>>> "+currentLevel);
+
+  // スコアが一定の点数に到達するとlevel-upする
+  if((scoreCount >= currentLevel) && (game_speed !== 100)){
+    alert("LEVEL UP~~~~~~~~~~~~~~~~~~!!!!!!!!!! ")
+    level++;
+    game_speed -= 100;
+  }
+}
+
+
+// level += 7;
+// scoreCount += 555044;
+// deleteLine += 54;
+// game_speed = 400;
+
+// // Game Speed
+// let game_speed = 800;
+
+// // Level
+// let level = 1;
+
+// // スコア
+// let scoreCount = 0;
+
+// // 消したライン数
+// let deleteLine = 0;
+
+// // scoreList(消した列により得点が変動する)
+// // level * 列のScore -> TotalScore
+// const scoreList = {
+//   1: 40, // 1列 : 40 Score
+//   2: 100, // 2列 : 100 Score
+//   3: 300, // 3列 : 300 Score
+//   4: 1200, // 4列 : 1200 Score
+// }
 
 // ======================== game sounds ========================
 
@@ -253,7 +304,8 @@ const resetButton = () => {
 
 
 
-// 初期化
+/* ================================ 初期化 ==================================== */
+
 function init() {
 
   // フィールドをクリア
@@ -272,8 +324,8 @@ function init() {
   interval = setInterval(dropTetro, game_speed);
 }
 
+/* ============================= Next Tetro ============================ */
 
-// テトロをネクストで初期化
 function setTetro() {
   // ネクストを現在のテトロにする
   tetro_t = tetro_n;
@@ -437,12 +489,14 @@ function checkLine() {
   }
 
   if (lineCount) {
-    DELETE_SOUND.pause();
-    DELETE_SOUND.play();
-    lines += lineCount;
-    score += 100 * (2 ** (lineCount - 1)); // <<<<<<<<<<<<<<<================= after score check!!
-
-    if (speed < game_speed - 10) speed += 10;
+    // lineを消した数をcount
+    deleteLine += lineCount;
+    // scoreの計算
+    console.log("deleteLine =========>>>>>>>>>. " + deleteLine)
+    scoreCount += scoreList[lineCount] * level;
+    console.log("checcccckckkkkkkkk---" + scoreCount)
+    // displayの更新
+    screenTransition();
   }
 }
 
