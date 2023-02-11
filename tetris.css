@@ -1,7 +1,7 @@
 @charset 'utf-8';
 
 body {
-  background-color: #000;
+  background-color: #0c1821;
   line-height: 1.7;
 }
 
@@ -9,7 +9,7 @@ body {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 4%;
-  background-color: #14213d;
+  background-color: #0c1821;
 }
 
 /* initial-screen
@@ -26,13 +26,15 @@ body {
   border-radius: 1.1em;
 }
 
-.initial-header h1 {
+.initial-header h1 { /* <<<<<<<<<<<<<<<<<<<======================== faviconでgameplay説明 */
   font-size: 3em;
   text-align: center;
+  border: double 4px #f1faee;
 }
 
 .select-menu {
   text-align: center;
+  margin-top: 1.7em;
 }
 
 #btn-menu {
@@ -89,7 +91,7 @@ body {
 .main-header {
   padding: 1.2rem;
   margin-bottom: 1.5rem;
-  border: 3px solid #14213d;
+  border: 3px solid #f1faee;
   box-sizing: border-box;
 }
 
@@ -117,7 +119,7 @@ body {
 }
 
 /* canvas */
-#can {
+#canvas {
   background-color: #000;
 }
 
@@ -130,8 +132,8 @@ body {
   bottom: 0;
 }
 
-/* reset button */
-#btn-reset {
+/* onStopButton */
+#onStopBtn {
   /* display: block; */
   padding: 1.1em;
   margin: 1.2em 1.1em;
@@ -141,19 +143,8 @@ body {
   border-radius: 1.2em;
 }
 
-/* pause button */
-#btn-pause {
-  /* display: block; */
-  padding: 1.1em;
-  margin: 1.2em 1.1em;
-  background-color: #1d3557;
-  color: #f1faee;
-  border: #457b9d solid 2px;
-  border-radius: 1.2em;
-}
 
-#btn-reset:hover,
-#btn-pause:hover {
+#onStopBtn:hover{
   background-color: #a8dadc;
   color: #1d3557;
   transform: scale(1.1);

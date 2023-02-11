@@ -1,3 +1,4 @@
+'use strict';
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Initial Screen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
@@ -61,8 +62,8 @@ const START_Y = 0;
 let tetro_x = START_X;
 let tetro_y = START_Y;
 
-// インターバル開始 or 一時停止
-let timeId;
+// setInterval
+let interval;
 
 // Game Over判定
 let over = false;
@@ -149,45 +150,21 @@ const TETRO_TYPES = [
 ]
 
 
-
-
-
-// ==================== background-image ===================
-
-let bgImage;
-bgImage = new Image();
-bgImage.src = "/img/starry-sky-2675322_1280 (1).jpg" // ここにimage追加
-
-
 // ======================== game sounds ========================
-// initial page
-const OPENING_SOUND = new Audio("/sounds/opening_sound.mp3");
 
-// main page
-const GAME_START_SOUND = "/sounds/game_start_sound.mp3";
-const DELETE_SOUND = "/sounds/delete_block.mp3";
-const DOWN_KEY_SOUND = "/sounds/down_key.mp3";
-const GAME_OVER_SOUND = "/sounds/game_over.mp3";
-const ROTATE_SOUND = "/sounds/rotate.mp3";
-const STAGE_CLEAR_SOUND = "/sounds/stage_clear.mp3";
-const SELECT_MENU_SOUND = "/sounds/select_menu.mp3";
+/** ~~~~~~~~~~~~~~~~~~~~ Audio() 鳴らないためコメントアウト ~~~~~~~~~~~~~~~~~~~~~~~~~~ <<<<<<<<<<<<<<<<===================
+   // initial page
+  const OPENING_SOUND = new Audio("/sounds/opening_sound.mp3");
 
-
-/**
- * @param 音源を代入した定数
- * @return <audio></audio>
- *  */
-
-// function createAudio(soundSource){
-//   let audioCtx = new AudioContext();
-//   let newAudio = document.createElement("audio");
-//   newAudio.src = soundSource;
-//   const track = audioCtx.createMediaElementSource(newAudio);
-//   console.log(newAudio)
-//   console.log(track)
-// }
-
-// createAudio(GAME_OVER_SOUND);
+  // main page
+  const GAME_START_SOUND = new Audio("/sounds/game_start_sound.mp3");
+  const DELETE_SOUND = new Audio("/sounds/delete_block.mp3");
+  const DOWN_KEY_SOUND = new Audio("/sounds/down_key.mp3");
+  const ROTATE_SOUND = new Audio("/sounds/rotate.mp3");
+  const PAUSE_SOUND = new Audio("/sounds/select_menu.mp3");
+  const GAME_OVER_SOUND = new Audio("/sounds/game_over.mp3");
+  *
+  */
 
 
 
@@ -220,26 +197,77 @@ document.getElementById("gameStart").addEventListener('click', () => {
 
 
 
-// ------------------ setInterval --------------------
 // ゲームの一時停止
-function setPauseTime(e) {
-  if (e.classList.contains("pause")) {
-    e.classList.remove("pause");
-    GAME_START_SOUND.pause();
-    timeId = setInterval(dropTetro, game_speed);
+// function setPauseTime(e) {
+//   if (e.classList.contains("pause")) {
+//     e.classList.remove("pause");
+
+//     /*
+//     GAME_START_SOUND.pause();
+//     */
+
+//     interval = setInterval(dropTetro, game_speed);
+//   } else {
+//     clearTimeout(interval);
+
+//     /*
+//     GAME_START_SOUND.pause();
+//     */
+
+//     e.classList.add("pause");
+//   }
+// }
+
+// let pauseGame = document.getElementById("btn-pause").addEventListener('click', (e) => {
+//   /*
+//   SELECT_MENU_SOUND.play();
+//   */
+
+//   // pause buttonがクリックされたらsetTime()を呼び出す
+//   setPauseTime(e.target);
+// }, false);
+
+
+
+
+/* ========================= setInterval ============================ */
+
+// intervalをclear
+function onClearInterval() {
+  clearInterval(interval);
+}
+
+// intervalをset
+function onSetInterval() {
+  interval = setInterval(dropTetro, game_speed);
+}
+
+// ReStart・Pause
+const onStopButton = () => {
+  let btn = document.getElementById("onStopBtn");
+
+  // classList内にpauseがあればstopする
+  if (btn.classList.contains("pause")) {
+    onClearInterval();
+    btn.classList.remove("pause");
+    btn.classList.add("restart");
+    btn.innerHTML = "RESTART";
   } else {
-    clearTimeout(timeId);
-    GAME_START_SOUND.pause();
-    e.classList.add("pause");
+    onSetInterval();
+    btn.classList.remove("restart");
+    btn.classList.add("pause");
+    btn.innerHTML = "PAUSE";
   }
 }
 
-// プレイ中の一時停止
-let pauseGame = document.getElementById("btn-pause").addEventListener('click', (e) => {
-  SELECT_MENU_SOUND.play();
-  // pause buttonがクリックされたらsetTime()を呼び出す
-  setPauseTime(e.target);
-}, false);
+
+/* ================================ ReStart ============================== */
+
+const reset = () => {
+  clearInterval(interval);
+  init();
+}
+
 
 
 // 初期化
@@ -258,7 +286,7 @@ function init() {
 
   setTetro();
   drawAll();
-  timeId = setInterval(dropTetro, game_speed);
+  interval = setInterval(dropTetro, game_speed);
 }
 
 
@@ -332,8 +360,13 @@ function drawAll() {
     context.strokeText(s, x, y);
     context.fillStyle = "white";
     context.fillText(s, x, y);
-    GAME_START_SOUND.pause();
-    GAME_OVER_SOUND.play();
+
+    /*
+    error ------------>>>>>>>>>>>>>>> Uncaught (in promise) DOMException: The element has no supported sources. <<<<<<<<<<=================
+     GAME_START_SOUND.pause();
+     GAME_OVER_SOUND.play();
+    */
+
   }
 
 }
@@ -479,8 +512,12 @@ document.onkeydown = (e) => {
       let newTetro = rotate();
       // 回転できるかチェック
       if (checkMove(0, 0, newTetro)) tetro = newTetro;
+
+      /*
       ROTATE_SOUND.pause();
       ROTATE_SOUND.play();
+      */
+
       break;
     case "Enter":
       break;
