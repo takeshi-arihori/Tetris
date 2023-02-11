@@ -6,6 +6,8 @@
 let initial_screen = document.getElementById("initial-screen");
 let main_screen = document.getElementById("main-screen");
 
+
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Main Screen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 
@@ -169,59 +171,14 @@ const screenTransition = () => {
 
   const BASE_LEVEL = 2000; // このレベルを基準にlevel-up(game_speed)がupする
   let currentLevel = level * BASE_LEVEL; // 現状のレベル
-  console.log("currentLevel --->>>> "+currentLevel);
 
   // スコアが一定の点数に到達するとlevel-upする
-  if((scoreCount >= currentLevel) && (game_speed !== 100)){
-    alert("LEVEL UP~~~~~~~~~~~~~~~~~~!!!!!!!!!! ")
+  if ((scoreCount >= currentLevel) && (game_speed !== 100)) {
+    alert("LEVEL UP!!!")
     level++;
     game_speed -= 100;
   }
 }
-
-
-// level += 7;
-// scoreCount += 555044;
-// deleteLine += 54;
-// game_speed = 400;
-
-// // Game Speed
-// let game_speed = 800;
-
-// // Level
-// let level = 1;
-
-// // スコア
-// let scoreCount = 0;
-
-// // 消したライン数
-// let deleteLine = 0;
-
-// // scoreList(消した列により得点が変動する)
-// // level * 列のScore -> TotalScore
-// const scoreList = {
-//   1: 40, // 1列 : 40 Score
-//   2: 100, // 2列 : 100 Score
-//   3: 300, // 3列 : 300 Score
-//   4: 1200, // 4列 : 1200 Score
-// }
-
-// ======================== game sounds ========================
-
-/** ~~~~~~~~~~~~~~~~~~~~ Audio() 鳴らないためコメントアウト ~~~~~~~~~~~~~~~~~~~~~~~~~~ <<<<<<<<<<<<<<<<===================
-   // initial page
-  const OPENING_SOUND = new Audio("/sounds/opening_sound.mp3");
-
-  // main page
-  const GAME_START_SOUND = new Audio("/sounds/game_start_sound.mp3");
-  const DELETE_SOUND = new Audio("/sounds/delete_block.mp3");
-  const DOWN_KEY_SOUND = new Audio("/sounds/down_key.mp3");
-  const ROTATE_SOUND = new Audio("/sounds/rotate.mp3");
-  const PAUSE_SOUND = new Audio("/sounds/select_menu.mp3");
-  const GAME_OVER_SOUND = new Audio("/sounds/game_over.mp3");
-  *
-  */
-
 
 
 // ========================= game start ===========================
@@ -243,9 +200,8 @@ document.getElementById("gameStart").addEventListener('click', () => {
 
   displayNone(initial_screen);
   displayBlock(main_screen);
+  console.log("clickstarttttt")
 
-  // Game Startのsoundを一度再生(loop処理なし)
-  // GAME_START_SOUND.play();
   init();
   dropTetro();
 }, false);
@@ -294,7 +250,7 @@ const resetButton = () => {
   }
 
   let res = confirm("本当に中断しますか？？");
-  if(res) {
+  if (res) {
     displayBlock(initial_screen);
     displayNone(main_screen);
   } else {
@@ -307,7 +263,6 @@ const resetButton = () => {
 /* ================================ 初期化 ==================================== */
 
 function init() {
-
   // フィールドをクリア
   for (let y = 0; y < FIELD_ROW; y++) {
     field[y] = [];
@@ -379,7 +334,7 @@ function drawAll() {
 
       // Next tetro
       if (TETRO_TYPES[tetro_n][y][x]) {
-        drawBlock(13 + x, 4 + y, tetro_n); // <<<<<<<<<<<============= after check point!!
+        drawBlock(13 + x, 4 + y, tetro_n);
       }
     }
   }
@@ -395,12 +350,6 @@ function drawAll() {
     context.strokeText(s, x, y);
     context.fillStyle = "white";
     context.fillText(s, x, y);
-
-    /*
-    error ------------>>>>>>>>>>>>>>> Uncaught (in promise) DOMException: The element has no supported sources. <<<<<<<<<<=================
-     GAME_START_SOUND.pause();
-     GAME_OVER_SOUND.play();
-    */
 
   }
 
@@ -491,10 +440,7 @@ function checkLine() {
   if (lineCount) {
     // lineを消した数をcount
     deleteLine += lineCount;
-    // scoreの計算
-    console.log("deleteLine =========>>>>>>>>>. " + deleteLine)
     scoreCount += scoreList[lineCount] * level;
-    console.log("checcccckckkkkkkkk---" + scoreCount)
     // displayの更新
     screenTransition();
   }
@@ -549,12 +495,6 @@ document.onkeydown = (e) => {
       let newTetro = rotate();
       // 回転できるかチェック
       if (checkMove(0, 0, newTetro)) tetro = newTetro;
-
-      /*
-      ROTATE_SOUND.pause();
-      ROTATE_SOUND.play();
-      */
-
       break;
     case "Enter":
       break;
