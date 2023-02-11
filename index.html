@@ -2,70 +2,62 @@
 <html lang="ja">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta charset="utf-8">
 
   <title>TETRIS</title>
-  <link rel="stylesheet" href="/css/app.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
+  <link rel="stylesheet" href="tetris.css">
 </head>
 
 <body>
-  <div class="container">
-    <div class="vh-100 bg-100">
-      <!--======================== Initial Page (最初の画面) ===========================-->
-      <div id="initialPage" class="d-block">
-        <h1>TETRIS</h1>
-        <div class="d-flex justify-content-center align-items-center">
-        </div>
-        <div class="d-flex text-center justify-content-center align-items-center">
-          <button type="button" id="btn_start" class="btn btn-outline-primary">Game Start</button>
-        </div>
+  <!--================ Initial Screen ===================-->
+  <div id="initial-screen">
+    <header class="initial-header wrapper">
+      <h1>TETRIS</h1>
+      <div class="select-menu">
+        <button type="button" id="btn-menu">HOW TO PLAY</button>
       </div>
-
-      <!--===================  Main Page (Game Start時に表示) =========================-->
-      <div id="mainPage" class="d-none">
-        <div class="score_board">
-          <div class="d-flex bd-highlight justify-content-center p-5 ">
-            <ul>
-              <li>score</li>
-              <li>next</li>
-              <li>level</li>
-            </ul>
-          </div>
-
-          <!-- canvas -->
-          <div class="justify-content-center mt-3">
-            <canvas id="canvas"></canvas>
-          </div>
-          <div class="pause">
-            <button id="btn_pause" class="btn btn-outline-danger d-inline-block">Pause</button>
-          </div>
-        </div>
- 
-        <!-- GameOver時に表示 -->
-        <div class="replay d-none">
-          <!-- Gameを終了し、Main画面に遷移する -->
-          <button type="button" id="btn_top" class="btn btn-outline-info">Top Page</button>
-          <!-- リプレイ -->
-          <button type="button" id="btn_replay" class="btn btn-outline-success">replay</button>
-        </div>
+    </header>
+    <div class="initial-main">
+      <div>
+        <button type="button" id="gameStart">GAME START</button>
       </div>
     </div>
+  </div>
 
 
-    <script src="js/app.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-      crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-      crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-      integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-      crossorigin="anonymous"></script>
+
+  <!--=================== Main Screen (Displayed at game start) ====================-->
+  <div id="main-screen">
+    <header class="main-header wrapper">
+      <div class="drawInfo">
+        <ul class="score-board">
+          <li id="level">LEVEL : 1</li>
+          <li id="score-count">SCORE : 0</li>
+          <li id="line-count">DELETE LINE : 0</li>
+        </ul>
+      </div>
+      <div>
+        <button id="resetBtn" type="button" class="reset" onclick="resetButton()">RESET</button>
+      </div>
+    </header>
+
+    <div class="main-contents wrapper">
+      <div>
+        <canvas id="canvas"></canvas>
+      </div>
+      <div class="btn-list">
+        <button id="onStopBtn" type="button" class="pause" onclick="onStopButton()">PAUSE</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script type="text/javascript" src="tetris.js"></script>
 
 </body>
 
