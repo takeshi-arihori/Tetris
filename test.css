@@ -1,0 +1,160 @@
+@charset 'utf-8';
+
+body {
+  background-color: #000;
+  line-height: 1.7;
+}
+
+.wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 4%;
+  background-color: #14213d;
+}
+
+/* initial-screen
+------------------------------ */
+/* Game start時にJavaScriptから display:none; でScreenを非表示にする */
+#initial-screen {
+  display: block;
+  height: 100vh;
+  color: #f1faee;
+}
+
+.initial-header{
+  padding: 1.1em 0;
+  border-radius: 1.1em;
+}
+
+.initial-header h1 {
+  font-size: 3em;
+  text-align: center;
+}
+
+.select-menu {
+  text-align: center;
+}
+
+#btn-menu {
+  padding: 0.7em 1.2em;
+  background-color: #1d3557;
+  border: #457b9d solid 2px;
+  color: #f1faee;
+  border-radius: 1.2em;
+}
+
+#btn-menu:hover {
+  background-color: #a8dadc;
+  color: #1d3557;
+  transform: scale(1.1);
+}
+
+.initial-main {
+  text-align: center;
+  margin: 5% 0;
+}
+
+#gameStart {
+  padding: 1.1em;
+  margin: 5% 1.1em;
+  background-color: #1d3557;
+  color: #f1faee;
+  border: #457b9d solid 2px;
+  border-radius: 1.2em;
+}
+
+#gameStart:hover {
+  background-color: #a8dadc;
+  color: #1d3557;
+  transform: scale(1.1);
+}
+
+
+
+
+
+
+/* main-screen
+------------------------------ */
+/* Game start時にJavaScriptから display:block; でScreenを表示させる */
+#main-screen {
+  display: none;
+  height: 100vh;
+  margin-top: 0;
+  color: #1d3557;
+  background-color: #000;
+}
+
+/* score_display */
+.main-header {
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+  border: 3px solid #14213d;
+  box-sizing: border-box;
+}
+
+.score-screen {
+  display: flex;
+}
+
+.score-screen li {
+  list-style-type: none;
+  width: 33.3333%;
+  margin: 1.2em 1.1em;
+  padding: 1.1em;
+  border: #457b9d solid 2px;
+  border-radius: 1.2em;
+  background-color: #f1faee;
+}
+
+/* main_display */
+.main-contents {
+  display: flex;
+  justify-content: center;
+  margin-top: 4.5em;
+  width: 85%;
+  background-color: #000;
+}
+
+/* canvas */
+#can {
+  background-color: #000;
+}
+
+.btn-wrap {
+  position: relative;
+}
+
+.btn-list {
+  position: absolute;
+  bottom: 0;
+}
+
+/* reset button */
+#btn-reset {
+  /* display: block; */
+  padding: 1.1em;
+  margin: 1.2em 1.1em;
+  background-color: #1d3557;
+  color: #f1faee;
+  border: #457b9d solid 2px;
+  border-radius: 1.2em;
+}
+
+/* pause button */
+#btn-pause {
+  /* display: block; */
+  padding: 1.1em;
+  margin: 1.2em 1.1em;
+  background-color: #1d3557;
+  color: #f1faee;
+  border: #457b9d solid 2px;
+  border-radius: 1.2em;
+}
+
+#btn-reset:hover,
+#btn-pause:hover {
+  background-color: #a8dadc;
+  color: #1d3557;
+  transform: scale(1.1);
+}

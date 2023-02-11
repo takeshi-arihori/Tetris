@@ -1,187 +1,222 @@
 
-// initialPageとmainPageを取得(GameStart時: initialPageがnoneになり、mainPageがd-blockになる)
-let initialPage = document.getElementById("initialPage");
-let mainPage = document.getElementById("mainPage");
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Initial Screen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+// initialPageとmainPageを取得
+let initial_screen = document.getElementById("initial-screen");
+let main_screen = document.getElementById("main-screen");
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Main Screen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 
-// テトロミノの落ちるスピード
-let game_speed = 300;
-
-// フィールドサイズ
-const FIELD_COL = 10;
-const FIELD_ROW = 20;
-
-// ブロック一つのサイズ(px)
+// ========================== field ===========================
+// 1ブロックのサイズ
 const BLOCK_SIZE = 25;
-
-// キャンバスサイズ (W250 * H500 のスクリーンサイズ)
-const SCREEN_W = BLOCK_SIZE * FIELD_COL;
-const SCREEN_H = BLOCK_SIZE * FIELD_ROW;
 
 // テトロミノのサイズ
 const TETRO_SIZE = 4;
 
-// インターバル開始 or 一時停止
-let timeoutID;
+// canvasのサイズ基準
+const FIELD_COL = 10;
+const FIELD_ROW = 20;
 
+// テトロミノのブロックサイズを掛け合わせてフィールドの大きさを定義
+const SCREEN_W = BLOCK_SIZE * FIELD_COL;
+const SCREEN_H = BLOCK_SIZE * FIELD_ROW;
+
+// フィールド ({FIELD_COL * FIELD_ROW} を格納する配列)
+let field = [];
 
 // ===================== キャンバスAPI ========================
-// フィールド描画
-let canvas = document.getElementById("canvas");
 
-// main-displayの描画
+// キャンバスAPIを取得
+let canvas = document.getElementById('canvas');
+
+// フィールドを描画
+let context = canvas.getContext('2d');
+
+// canvasの大きさとborderを定義
 canvas.width = SCREEN_W;
 canvas.height = SCREEN_H;
-canvas.style.border = "3px solid #555"; // fieldの線
-
-// CanvasRenderingContext2D: 要素の描画面のための二次元描画コンテキストを取得
-let context = canvas.getContext("2d");
+canvas.style.border = "3px solid #555";
 
 
-// ==================== テトロミノ ====================
 
-// テトロミノの落下スタート地点
+
+// ======================== テトロミノ ========================
+
+// テトロミノ
+let tetro;
+
+// テトロミノのtype
+let tetro_t;
+
+// テトロミノネクスト
+let tetro_n;
+
+// テトロミノの落下地点を定義
 const START_X = FIELD_COL / 2 - TETRO_SIZE / 2;
 const START_Y = 0;
 
-// テトロミノ本体
-let tetro;
-
-// テトロミノの座標
+// テトロミノの現在地を代入
 let tetro_x = START_X;
 let tetro_y = START_Y;
 
-// テトロミノの形
-let tetro_type;
+// インターバル開始 or 一時停止
+let timeId;
 
-// テトロミノネクスト
-let tetro_next;
-
-// フィールドの中身
-let field = [];
-
-// GAME OVERフラグ
+// Game Over判定
 let over = false;
+
+
+
+// ======================== Game play ========================
+
+// Game Speed
+let game_speed = 400;
+
+// スコア
+let score;
 
 // 消したライン数
 let lines = 0;
 
-// スコア
-let score = 0;
-
-// ゲームフィールドの位置
-const OFFSET_X = 0;
-const OFFSET_Y = 0;
 
 
-// 各テトロミノの色
+
+// // TETRO_TYPESに格納しているテトロミノのindexをランダムで取得
+// tetro_t = Math.floor(Math.random() * (TETRO_TYPES.length - 1)) + 1;
+// // テトロミノを取得し変数に代入
+// tetro = TETRO_TYPES[tetro_t];
+
+// テトロミノの色
 const TETRO_COLORS = [
-  "#000",               // 空
-  "#6CF",               // 水色
-  "#F92",               // オレンジ
-  "#66F",               // 青
-  "#C5C",               // 紫
-  "#FD2",               // 黄色
-  "#F44",               // 赤
-  "#5B5",               // 緑
-]
+  "#000",
+  "#6cf",
+  "#fb2",
+  "#66f",
+  "#c5c",
+  "#fd2",
+  "#f44",
+  "#6b6",
+];
 
 
-// テトロミノの種類
+// テトロミノのType
 const TETRO_TYPES = [
-  [],             // 0. 空
-
-  [               // 1. I
+  [],
+  [
     [0, 0, 0, 0],
     [1, 1, 1, 1],
     [0, 0, 0, 0],
-    [0, 0, 0, 0]
+    [0, 0, 0, 0],
   ],
-  [               // 2. L
+  [
     [0, 1, 0, 0],
     [0, 1, 0, 0],
     [0, 1, 1, 0],
-    [0, 0, 0, 0]
+    [0, 0, 0, 0],
   ],
-  [               // 3. J
+  [
     [0, 0, 1, 0],
     [0, 0, 1, 0],
     [0, 1, 1, 0],
-    [0, 0, 0, 0]
+    [0, 0, 0, 0],
   ],
-  [               // 4. T
+  [
     [0, 1, 0, 0],
     [0, 1, 1, 0],
     [0, 1, 0, 0],
-    [0, 0, 0, 0]
+    [0, 0, 0, 0],
   ],
-  [               // 5. O
+  [
     [0, 0, 0, 0],
     [0, 1, 1, 0],
     [0, 1, 1, 0],
-    [0, 0, 0, 0]
+    [0, 0, 0, 0],
   ],
-  [               // 6. Z
+  [
     [0, 0, 0, 0],
     [1, 1, 0, 0],
     [0, 1, 1, 0],
-    [0, 0, 0, 0]
+    [0, 0, 0, 0],
   ],
-  [               // 7. S
+  [
     [0, 0, 0, 0],
     [0, 1, 1, 0],
     [1, 1, 0, 0],
-    [0, 0, 0, 0]
+    [0, 0, 0, 0],
   ],
-  // [               // 8. ..
-  //   [0, 0, 0, 0],
-  //   [0, 0, 0, 0],
-  //   [0, 1, 1, 0],
-  //   [0, 0, 0, 0]
-  // ],
-];
+]
 
-// ====================== 画像 ======================
+
+
+
+
+// ==================== background-image ===================
+
 let bgImage;
 bgImage = new Image();
 bgImage.src = "/img/starry-sky-2675322_1280 (1).jpg" // ここにimage追加
 
-let blImage;
-blImage = new Image();
-blImage.src = "/img/mountain-fantasy.jpg"; // ここにimage追加
 
-// ====================== 効果音 =========================
-const MUSIC = new Audio("/music/Opening_sound.mp3");
-const ROTATE_SOUND = new Audio("/music/Rotate時の音.mp3");
-const STACK_SOUND = new Audio("/music/下キーを押した時の音.mp3");
-const DELETE_SOUND = new Audio("/music/ブロックが消える時の音.mp3");
-const GAME_OVER = new Audio("/music/GAME OVER時の音.mp3");
+// ======================== game sounds ========================
+// initial page
+const OPENING_SOUND = new Audio("/sounds/opening_sound.mp3");
+
+// main page
+const GAME_START_SOUND = "/sounds/game_start_sound.mp3";
+const DELETE_SOUND = "/sounds/delete_block.mp3";
+const DOWN_KEY_SOUND = "/sounds/down_key.mp3";
+const GAME_OVER_SOUND = "/sounds/game_over.mp3";
+const ROTATE_SOUND = "/sounds/rotate.mp3";
+const STAGE_CLEAR_SOUND = "/sounds/stage_clear.mp3";
+const SELECT_MENU_SOUND = "/sounds/select_menu.mp3";
+
+
+/**
+ * @param 音源を代入した定数
+ * @return <audio></audio>
+ *  */
+
+// function createAudio(soundSource){
+//   let audioCtx = new AudioContext();
+//   let newAudio = document.createElement("audio");
+//   newAudio.src = soundSource;
+//   const track = audioCtx.createMediaElementSource(newAudio);
+//   console.log(newAudio)
+//   console.log(track)
+// }
+
+// createAudio(GAME_OVER_SOUND);
 
 
 
+// ========================= game start ===========================
 
-// ------------------- 画面遷移 ----------------------
 // d-blockをd-noneに変更
 function displayNone(ele) {
-  ele.classList.remove("d-block");
-  ele.classList.add("d-none");
+  ele.style.display = "block";
+  ele.style.display = "none";
 }
 
 // d-noneをd-blockに変更
 function displayBlock(ele) {
-  ele.classList.remove("d-none");
-  ele.classList.add("d-block");
+  ele.style.display = "none";
+  ele.style.display = "block";
 }
 
-// buttonをクリックするとGAME START
-document.getElementById("btn_start").addEventListener('click', () => {
-  // buttonがクリックされるとmainPageに切り替わる
-  displayNone(initialPage);
-  displayBlock(mainPage);
-  MUSIC.play();
+/* gameStart()クリック時にinitial-pageとmain-pageを入れ替える */
+document.getElementById("gameStart").addEventListener('click', () => {
+
+  displayNone(initial_screen);
+  displayBlock(main_screen);
+
+  // Game Startのsoundを一度再生(loop処理なし)
+  // GAME_START_SOUND.play();
   init();
   dropTetro();
-}, false)
+}, false);
+
 
 
 
@@ -189,74 +224,74 @@ document.getElementById("btn_start").addEventListener('click', () => {
 // ゲームの一時停止
 function setPauseTime(e) {
   if (e.classList.contains("pause")) {
-    timeoutID = setInterval(dropTetro, game_speed);
     e.classList.remove("pause");
-    MUSIC.pause();
-    MUSIC.play();
+    GAME_START_SOUND.pause();
+    timeId = setInterval(dropTetro, game_speed);
   } else {
-    clearTimeout(timeoutID);
-    MUSIC.pause();
+    clearTimeout(timeId);
+    GAME_START_SOUND.pause();
     e.classList.add("pause");
   }
 }
 
 // プレイ中の一時停止
-let pauseGame = document.getElementById("btn_pause").addEventListener('click', (e) => {
+let pauseGame = document.getElementById("btn-pause").addEventListener('click', (e) => {
+  SELECT_MENU_SOUND.play();
   // pause buttonがクリックされたらsetTime()を呼び出す
   setPauseTime(e.target);
 }, false);
 
 
-
-// 初期化(Game Start時だけ呼び出される)
+// 初期化
 function init() {
-  // フィールドのクリア
+
+  // フィールドをクリア
   for (let y = 0; y < FIELD_ROW; y++) {
     field[y] = [];
     for (let x = 0; x < FIELD_COL; x++) {
       field[y][x] = 0;
     }
   }
-  // 最初のテトロのためネクスト入れる
-  tetro_next = Math.floor(Math.random() * (TETRO_TYPES.length - 1)) + 1;
 
-  // テトロをセットして描画開始
+  // 最初のテトロのためネクスト入れる
+  tetro_n = Math.floor(Math.random() * (TETRO_TYPES.length - 1)) + 1;
+
   setTetro();
   drawAll();
-  timeoutID = setInterval(dropTetro, game_speed);
+  timeId = setInterval(dropTetro, game_speed);
 }
-
 
 
 // テトロをネクストで初期化
 function setTetro() {
   // ネクストを現在のテトロにする
-  tetro_type = tetro_next;
-  tetro = TETRO_TYPES[tetro_type];
-  tetro_next = Math.floor(Math.random() * (TETRO_TYPES.length - 1)) + 1;
+  tetro_t = tetro_n;
+  tetro = TETRO_TYPES[tetro_t];
+  tetro_n = Math.floor(Math.random() * (TETRO_TYPES.length - 1)) + 1;
 
   tetro_x = START_X;
   tetro_y = START_Y;
 }
 
-// ブロック一つを描画
-function drawBlock(x, y, c) {
 
+function drawBlock(x, y, c) {
+  // ブロックサイズを代入
   let px = x * BLOCK_SIZE;
   let py = y * BLOCK_SIZE;
 
   context.fillStyle = TETRO_COLORS[c];
   context.fillRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
-  context.strokeStyle = "white";
-  context.strokeRect(px, py, BLOCK_SIZE, BLOCK_SIZE)
-}
 
+  context.strokeStyle = "white";
+  context.strokeRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
+}
 
 // 全てを描画
 function drawAll() {
-  context.clearRect(0, 0, SCREEN_W, SCREEN_H); // フィールドを表示する前にクリア/
 
-  // フィールドを描画
+  // フィールドをクリアにする
+  context.clearRect(0, 0, SCREEN_W, SCREEN_H);
+
   for (let y = 0; y < FIELD_ROW; y++) {
     for (let x = 0; x < FIELD_COL; x++) {
       if (field[y][x]) {
@@ -265,31 +300,31 @@ function drawAll() {
     }
   }
 
-  // 着地点を計算
+  // 着地点の計算
   let plus = 0;
   while (checkMove(0, plus + 1)) plus++;
 
-  // ブロック一つを描画
+  // テトロミノを描画
   for (let y = 0; y < TETRO_SIZE; y++) {
     for (let x = 0; x < TETRO_SIZE; x++) {
       if (tetro[y][x]) {
         // 着地点
         drawBlock(tetro_x + x, tetro_y + y + plus, 0);
         // 本体
-        drawBlock(tetro_x + x, tetro_y + y, tetro_type);
+        drawBlock(tetro_x + x, tetro_y + y, tetro_t);
       }
 
-      // ネクストテトロ
-      if (TETRO_TYPES[tetro_next][y][x]) {
-        drawBlock(13 + x, 4 + y, tetro_next);
+      // Next tetro
+      if (TETRO_TYPES[tetro_n][y][x]) {
+        drawBlock(13 + x, 4 + y, tetro_n); // <<<<<<<<<<<============= after check point!!
       }
     }
   }
 
-  // GAME OVERの時に画面にGAME OVERと表示
+  // Game over時の設定
   if (over) {
     let s = "GAME OVER";
-    context.font = "40px 'MS ゴシック'";
+    context.font = "50px 'MSゴシック'";
     let w = context.measureText(s).width;
     let x = SCREEN_W / 2 - w / 2;
     let y = SCREEN_H / 2 - 20;
@@ -297,13 +332,16 @@ function drawAll() {
     context.strokeText(s, x, y);
     context.fillStyle = "white";
     context.fillText(s, x, y);
-    MUSIC.pause();
-    GAME_OVER.play();
+    GAME_START_SOUND.pause();
+    GAME_OVER_SOUND.play();
   }
+
 }
 
-// ブロックの衝突判定
+
+// ブロック衝突判定
 function checkMove(mx, my, newTetro) {
+
   if (newTetro === undefined) newTetro = tetro;
 
   for (let y = 0; y < TETRO_SIZE; y++) {
@@ -328,29 +366,29 @@ function checkMove(mx, my, newTetro) {
   return true;
 }
 
-// テトロミノの回転
+// テトロミノ回転
 function rotate() {
-  let newTetro = [];
-
+  let ntetro = [];
   for (let y = 0; y < TETRO_SIZE; y++) {
-    newTetro[y] = [];
+    ntetro[y] = [];
     for (let x = 0; x < TETRO_SIZE; x++) {
-      newTetro[y][x] = tetro[TETRO_SIZE - x - 1][y];
+      ntetro[y][x] = tetro[TETRO_SIZE - x - 1][y];
     }
   }
-  return newTetro;
+  return ntetro;
 }
 
-// 衝突時はテトロミノを固定
+// 最下部に到達時点でテトロミノ固定
 function fixTetro() {
   for (let y = 0; y < TETRO_SIZE; y++) {
     for (let x = 0; x < TETRO_SIZE; x++) {
       if (tetro[y][x]) {
-        field[tetro_y + y][tetro_x + x] = tetro_type;
+        field[tetro_y + y][tetro_x + x] = tetro_t;
       }
     }
   }
 }
+
 
 // ラインが揃ったかチェックして消す
 function checkLine() {
@@ -386,35 +424,37 @@ function checkLine() {
     DELETE_SOUND.pause();
     DELETE_SOUND.play();
     lines += lineCount;
-    score += 100 * (2 ** (lineCount - 1));
+    score += 100 * (2 ** (lineCount - 1)); // <<<<<<<<<<<<<<<================= after score check!!
 
     if (speed < game_speed - 10) speed += 10;
   }
 }
 
+
+
 // テトロミノの落下処理
 function dropTetro() {
-  // overフラグが立っていたなら即return
+
   if (over) return;
 
   if (checkMove(0, 1)) tetro_y++;
-  // テトロミノが衝突した時の処理
   else {
+    // 一番下の行にテトロミノが付いた時点でその場に固定
     fixTetro();
+
     // テトロミノのラインが揃ったかチェック
     checkLine();
-    // 次のテトロミノの処理
+
+    // 次のテトロミノの準備
     setTetro();
 
-    // フィールドが埋まったらGAME OVER
-    if (!checkMove(0, 0)) {
-      over = true;
-    }
+    if (!checkMove(0, 0)) over = true;
   }
+
   drawAll();
 }
 
-// キーボードが押された時の処理
+
 document.onkeydown = (e) => {
   // overフラグが立っていたなら即return
   if (over) return;
@@ -434,6 +474,7 @@ document.onkeydown = (e) => {
       if (checkMove(0, 1)) tetro_y++;
       break;
     case "Shift":
+      break;
     case " ":
       let newTetro = rotate();
       // 回転できるかチェック
@@ -442,10 +483,8 @@ document.onkeydown = (e) => {
       ROTATE_SOUND.play();
       break;
     case "Enter":
-      setPauseTime(pauseGame)
       break;
   }
   // 処理後にもう一度全体を表示
   drawAll();
 };
-
