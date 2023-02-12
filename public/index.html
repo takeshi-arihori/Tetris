@@ -15,7 +15,7 @@
   <!--================ Initial Screen ===================-->
   <div id="initial-screen">
     <header class="initial-header wrapper">
-      <h1>TETRIS</h1>
+      <h1><img src="img/tetrisHead_initialPage.png" alt="tetris画像(文字)"></h1>
       <div class="select-menu">
         <button type="button" id="btn-menu">HOW TO PLAY</button>
       </div>
@@ -39,17 +39,20 @@
           <li id="line-count">DELETE LINE : 0</li>
         </ul>
       </div>
-      <div>
-        <button id="resetBtn" type="button" class="reset" onclick="resetButton()">RESET</button>
-      </div>
     </header>
 
     <div class="main-contents wrapper">
       <div>
         <canvas id="canvas"></canvas>
       </div>
+
       <div class="btn-list">
-        <button id="onStopBtn" type="button" class="pause">PAUSE</button>
+        <div>
+          <button id="resetBtn" type="button" class="reset">RESET</button>
+        </div>
+        <div>
+          <button id="onStopBtn" type="button" class="pause">PAUSE</button>
+        </div>
       </div>
     </div>
   </div>
