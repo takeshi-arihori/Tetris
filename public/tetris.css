@@ -1,36 +1,36 @@
 @charset 'utf-8';
 
+html{
+  font-size: 100%;
+  background-color: #000;
+}
+
 body {
-  background-color: #0c1821;
   line-height: 1.7;
 }
 
 .wrapper {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 4%;
-  background-color: #0c1821;
 }
 
 /* initial-screen
 ------------------------------ */
 /* Game start時にJavaScriptから display:none; でScreenを非表示にする */
 #initial-screen {
-  display: block;
+  display: block; /* <<<<<<<<<<<<<<<<<<<<================== display check */
   height: 100vh;
-  color: #f1faee;
+  color: f1faee;
 }
 
 .initial-header {
-  padding: 1.1em 0;
-  border-radius: 1.1em;
+  padding: 4em 0;
 }
 
 .initial-header h1 {
   /* <<<<<<<<<<<<<<<<<<<======================== faviconでgameplay説明 */
   font-size: 3em;
   text-align: center;
-  border: double 4px #555;
 }
 
 .select-menu {
@@ -79,33 +79,36 @@ body {
 
 /* main-screen
 ------------------------------ */
+
 /* Game start時にJavaScriptから display:block; でScreenを表示させる */
 #main-screen {
-  display: none;
+  display: none; /* <<<<<<<<<<<<<<<<<<<<================== display check */
   height: 100vh;
   margin-top: 0;
   color: #1d3557;
-  background-color: #000;
+  background-image: url("img/main_bg_img.jpg");
+  background-position: center;
+  background-size: contain;
+  min-height: 100vh;
 }
+
 
 /* score_display */
 .main-header {
   display: flex;
-  justify-content: space-between;
-  padding: 1.2rem;
-  margin-bottom: 1.5rem;
-  border: 3px solid #555;
+  justify-content: space-around;
   box-sizing: border-box;
 }
 
 .drawInfo {
   display: flex;
   width: 100 / 3%;
-  margin: 1.2em 3em;
+  margin-top: 3em;
   padding: 1.1em 3em;
-  border: #457b9d solid 2px;
+  border: #f1faee double 3px;
   border-radius: 1.2em;
-  background-color: #f1faee;
+  background-color: #000;
+  color: #f1faee;
 }
 
 .score-board{
@@ -121,7 +124,7 @@ body {
 .main-contents {
   display: flex;
   justify-content: center;
-  margin-top: 4.5em;
+  margin-top: 2.5em;
   width: 85%;
   background-color: #000;
 }
@@ -135,44 +138,39 @@ body {
 #onStopBtn {
   padding: 1.1em;
   margin: 1.2em 1.1em;
-  background-color: #1d3557;
+  background-color: #284b63;
   color: #f1faee;
   border: #457b9d solid 2px;
   border-radius: 1.2em;
 }
 
+
+
+
+/* --- btn-list --- */
+.btn-list {
+  display: flex;
+  justify-content: space-between;
+}
+
+#onStopBtn, #resetBtn{
+  padding: 0.7em;
+  margin: 1.2em 1.1em;
+  background-color: #284b63;
+  color: #f1faee;
+  border: #457b9d double 5px;
+  border-radius: 1.1em;
+  flex-direction: column;
+}
+
+/* --- onStopBtn --- */
 #onStopBtn:hover {
   background-color: #a8dadc;
   color: #1d3557;
   transform: scale(1.1);
 }
 
-/* ReStart・Reset */
-.btn-list {
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  position: relative;
-}
-
-#onStopBtn{
-  align-items: center;
-  position: absolute;
-  bottom: 10px;
-  display: block;
-  margin: 0 1.1em;
-}
-
-/* resetBtn */
-#resetBtn {
-  padding: 0.7em;
-  margin: 1.2em 1.1em;
-  background-color: #1d3557;
-  color: #f1faee;
-  border: #457b9d double 5px;
-  border-radius: 1.1em;
-}
-
+/* --- resetBtn --- */
 #resetBtn:hover {
   background-color: #ff0000;
   color: #a8dadc;

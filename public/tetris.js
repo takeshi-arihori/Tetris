@@ -7,7 +7,6 @@ let initial_screen = document.getElementById("initial-screen");
 let main_screen = document.getElementById("main-screen");
 
 
-
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Main Screen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 
@@ -72,6 +71,7 @@ let over = false;
 
 
 
+
 // ======================== Game play ========================
 
 // Game Speed
@@ -91,8 +91,8 @@ let deleteLine = 0;
 const scoreList = {
   1: 40, // 1列 : 40 Score
   2: 100, // 2列 : 100 Score
-  3: 300, // 3列 : 250 Score
-  4: 1000, // 4列 : 700 Score
+  3: 400, // 3列 : 400 Score
+  4: 1200, // 4列 : 1200 Score
 }
 
 
@@ -157,6 +157,21 @@ const TETRO_TYPES = [
 ]
 
 
+
+
+/* ========================= sounds ============================ */
+
+let initialPageOpeningSound = new Audio("sounds/opening_sound.mp3");
+let mainSound = new Audio("sounds/game_start_sound.mp3");
+let gameOverSound = new Audio("sounds/game_over.mp3");
+let downKeySound = new Audio("sounds/down_key.mp3");
+let stageClearSound = new Audio("sounds/stage_clear.mp3");
+let deleteBlockSound = new Audio("sounds/delete_block.mp3");
+let rotateSound = new Audio("sounds/rotate.mp3");
+let pauseSelectSound = new Audio("sounds/pause_menu.mp3");
+
+
+
 /* =========================== Score Display ======================= */
 
 const screenTransition = () => {
@@ -170,18 +185,22 @@ const screenTransition = () => {
 
 
   const BASE_LEVEL = 2000; // このレベルを基準にlevel-up(game_speed)がupする
-  let currentLevel = level * BASE_LEVEL; // 現状のレベル
+  let nextLevel = level * BASE_LEVEL; // 次のレベルup
 
   // スコアが一定の点数に到達するとlevel-upする
-  if ((scoreCount >= currentLevel) && (game_speed !== 100)) {
-    alert("LEVEL UP!!!")
+  if ((scoreCount >= nextLevel) && (game_speed !== 100)) {
     level++;
     game_speed -= 100;
+    stageClearSound.play();
+    alert(`LEVEL UP!!! YOU ARE ${level} LEVEL!!!`);
+    onClearInterval();
+    interval = setInterval(dropTetro, game_speed);
+    console.log("GAMESPEED : " + game_speed);
   }
 }
 
 
-// ========================= game start ===========================
+/* ========================= game start =========================== */
 
 // d-blockをd-noneに変更
 function displayNone(ele) {
@@ -195,17 +214,16 @@ function displayBlock(ele) {
   ele.style.display = "block";
 }
 
+
 /* gameStart()クリック時にinitial-pageとmain-pageを入れ替える */
 document.getElementById("gameStart").addEventListener('click', () => {
 
   displayNone(initial_screen);
   displayBlock(main_screen);
-  console.log("clickstarttttt")
-
+  mainSound.play();
   init();
   dropTetro();
 }, false);
-
 
 
 /* ========================= setInterval ============================ */
@@ -220,37 +238,57 @@ function onSetInterval() {
   interval = setInterval(dropTetro, game_speed);
 }
 
+/* ================================ Pause・ReStart ================================ */
 
-let btn = document.getElementById("onStopBtn");
+// HTMLからonStopBtnを取得
+document.getElementById("onStopBtn").addEventListener("click", () => {
+  mainSound.pause();
+  pauseSelectSound.pause();
+  pauseSelectSound.play();
+  onStopButton();
+})
+
+let repeatFlag = true; // pause時はfalse;
 
 // ReStart・Pause
 const onStopButton = () => {
 
-  // classList内にpauseがあればstopする
-  if (btn.classList.contains("pause")) {
+  if (repeatFlag == true) {
     onClearInterval();
-    btn.classList.remove("pause");
-    btn.classList.add("restart");
-    btn.innerHTML = "RESTART";
+    document.getElementById("onStopBtn").innerHTML = "RESTART";
+    repeatFlag = false;
+
   } else {
+    onClearInterval();
     onSetInterval();
-    btn.classList.remove("restart");
-    btn.classList.add("pause");
-    btn.innerHTML = "PAUSE";
+    document.getElementById("onStopBtn").innerHTML = "PAUSE";
+    repeatFlag = true;
   }
+
 }
 
 
-/* ================================ ReStart ============================== */
 
-const resetButton = () => {
+/* ================================ Reset ============================== */
+
+// HTMLからresetBtnを取得
+document.getElementById("resetBtn").addEventListener("click", (e) => {
+
+  pauseSelectSound.pause();
+  pauseSelectSound.play();
+  resetButton(e.target);
+})
+
+const resetButton = (e) => {
+
   // pauseしていなければ一旦pauseする
-  if (btn.classList.contains("pause")) {
+  if (e.classList.contains("pause")) {
     onClearInterval();
   }
 
   let res = confirm("本当に中断しますか？？");
   if (res) {
+    onClearInterval();
     displayBlock(initial_screen);
     displayNone(main_screen);
   } else {
@@ -350,7 +388,8 @@ function drawAll() {
     context.strokeText(s, x, y);
     context.fillStyle = "white";
     context.fillText(s, x, y);
-
+    mainSound.pause();
+    gameOverSound.play();
   }
 
 }
@@ -440,7 +479,9 @@ function checkLine() {
   if (lineCount) {
     // lineを消した数をcount
     deleteLine += lineCount;
-    scoreCount += scoreList[lineCount] * level;
+    // scoreの計算
+    scoreCount += scoreList[lineCount];
+    deleteBlockSound.play();
     // displayの更新
     screenTransition();
   }
@@ -470,33 +511,43 @@ function dropTetro() {
   drawAll();
 }
 
-
+// キー操作
 document.onkeydown = (e) => {
   // overフラグが立っていたなら即return
   if (over) return;
 
+  // Pause時にキー操作を無効にする
+  if (!repeatFlag) {
+    e.preventDefault();
+    if (e.key == " ") onStopButton();
+    return;
+  }
+
   switch (e.key) {
-    case "ArrowLeft":
+    case "ArrowLeft":  // left
       if (checkMove(-1, 0)) tetro_x--;
       break;
-    case "ArrowRight":
+    case "ArrowRight": // right
       if (checkMove(1, 0)) tetro_x++;
       break;
-    case "ArrowUp":
+    case "ArrowUp": // under
       // ↑キーは一番下までブロックが一瞬で移動するようにする
       while (checkMove(0, 1)) tetro_y++;
+      downKeySound.play();
       break;
-    case "ArrowDown":
+    case "ArrowDown": // under
       if (checkMove(0, 1)) tetro_y++;
       break;
-    case "Shift":
-      break;
-    case " ":
+    case "Shift": // rotate
+    case "Enter":
       let newTetro = rotate();
       // 回転できるかチェック
       if (checkMove(0, 0, newTetro)) tetro = newTetro;
+      rotateSound.pause();
+      rotateSound.play();
       break;
-    case "Enter":
+    case " ":
+      onStopButton();
       break;
   }
   // 処理後にもう一度全体を表示
