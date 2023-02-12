@@ -200,7 +200,6 @@ document.getElementById("gameStart").addEventListener('click', () => {
 
   displayNone(initial_screen);
   displayBlock(main_screen);
-  console.log("clickstarttttt")
 
   init();
   dropTetro();
@@ -221,27 +220,55 @@ function onSetInterval() {
 }
 
 
-let btn = document.getElementById("onStopBtn");
+
+/* ================================ Pause・ReStart ================================ */
+
+// HTMLからonStopBtnを取得
+document.getElementById("onStopBtn").addEventListener("click", () => {
+  onStopButton();
+})
+
+let repeatFlag = true; // pause時はfalse;
 
 // ReStart・Pause
 const onStopButton = () => {
 
-  // classList内にpauseがあればstopする
-  if (btn.classList.contains("pause")) {
+  console.log("onstopButton内がクリックされた！！！！")
+  console.log("repeatFlag :" + repeatFlag);
+
+  if (repeatFlag == true) {
     onClearInterval();
-    btn.classList.remove("pause");
-    btn.classList.add("restart");
-    btn.innerHTML = "RESTART";
+    document.getElementById("onStopBtn").innerHTML = "RESTART";
+    repeatFlag = false;
+
   } else {
+    onClearInterval();
     onSetInterval();
-    btn.classList.remove("restart");
-    btn.classList.add("pause");
-    btn.innerHTML = "PAUSE";
+    document.getElementById("onStopBtn").innerHTML = "PAUSE";
+    repeatFlag = true;
   }
+
+  // classList内にpauseがあればstopする
+  // if (btn.classList.contains("pause")) {
+  //   console.log("そしてpause状態")
+  //   onClearInterval();
+  //   btn.classList.remove("pause");
+  //   btn.classList.add("restart");
+  //   invalidKey();
+
+  // } else {
+  //   onSetInterval();
+  //   btn.classList.remove("restart");
+  //   btn.classList.add("pause");
+  //   btn.innerHTML = "PAUSE";
+  // }
+
+
 }
 
 
-/* ================================ ReStart ============================== */
+
+/* ================================ Reset ============================== */
 
 const resetButton = () => {
   // pauseしていなければ一旦pauseする
@@ -470,33 +497,38 @@ function dropTetro() {
   drawAll();
 }
 
-
+// キー操作
 document.onkeydown = (e) => {
   // overフラグが立っていたなら即return
   if (over) return;
+  if(!repeatFlag) {
+    e.preventDefault();
+    if(e.key == " ") onStopButton();
+    return;
+  }
 
   switch (e.key) {
-    case "ArrowLeft":
+    case "ArrowLeft":  // left
       if (checkMove(-1, 0)) tetro_x--;
       break;
-    case "ArrowRight":
+    case "ArrowRight": // right
       if (checkMove(1, 0)) tetro_x++;
       break;
-    case "ArrowUp":
+    case "ArrowUp": // under
       // ↑キーは一番下までブロックが一瞬で移動するようにする
       while (checkMove(0, 1)) tetro_y++;
       break;
-    case "ArrowDown":
+    case "ArrowDown": // under
       if (checkMove(0, 1)) tetro_y++;
       break;
-    case "Shift":
-      break;
-    case " ":
+    case "Shift": // rotate
+    case "Enter":
       let newTetro = rotate();
       // 回転できるかチェック
       if (checkMove(0, 0, newTetro)) tetro = newTetro;
       break;
-    case "Enter":
+    case " ":
+      onStopButton();
       break;
   }
   // 処理後にもう一度全体を表示
