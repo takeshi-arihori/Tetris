@@ -75,7 +75,7 @@ let over = false;
 // ======================== Game play ========================
 
 // Game Speed
-let game_speed = 100;
+let game_speed = 800;
 
 // Level
 let level = 1;
