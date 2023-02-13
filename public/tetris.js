@@ -7,6 +7,22 @@ let initial_screen = document.getElementById("initial-screen");
 let main_screen = document.getElementById("main-screen");
 
 
+// ゲーム説明の表示
+const btnMenu = document.getElementById("btn-menu");
+
+btnMenu.addEventListener("click", () => {
+  const more = document.querySelector('.more');
+  more.classList.toggle('appear');
+
+  if (btnMenu.textContent == "HOW TO PLAY") {
+    btnMenu.textContent = "閉じる";
+  } else {
+    btnMenu.textContent = "HOW TO PLAY";
+  }
+});
+
+
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Main Screen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 
@@ -184,7 +200,7 @@ const screenTransition = () => {
   scoreBoardLine.innerHTML = `DELETE LINE : ${deleteLine}`;
 
 
-  const BASE_LEVEL = 2000; // このレベルを基準にlevel-up(game_speed)がupする
+  const BASE_LEVEL = 3000; // このレベルを基準にlevel-up(game_speed)がupする
   let nextLevel = level * BASE_LEVEL; // 次のレベルup
 
   // スコアが一定の点数に到達するとlevel-upする
@@ -229,12 +245,12 @@ document.getElementById("gameStart").addEventListener('click', () => {
 /* ========================= setInterval ============================ */
 
 // intervalをclear
-function onClearInterval() {
+const onClearInterval = () => {
   clearInterval(interval);
 }
 
 // intervalをset
-function onSetInterval() {
+const onSetInterval = () => {
   interval = setInterval(dropTetro, game_speed);
 }
 
@@ -273,7 +289,7 @@ const onStopButton = () => {
 
 // HTMLからresetBtnを取得
 document.getElementById("resetBtn").addEventListener("click", (e) => {
-
+  mainSound.pause();
   pauseSelectSound.pause();
   pauseSelectSound.play();
   resetButton(e.target);
@@ -288,10 +304,9 @@ const resetButton = (e) => {
 
   let res = confirm("本当に中断しますか？？");
   if (res) {
-    onClearInterval();
-    displayBlock(initial_screen);
-    displayNone(main_screen);
+    window.location.reload(); // reload
   } else {
+    onClearInterval();
     onSetInterval();
   }
 }
@@ -511,7 +526,43 @@ function dropTetro() {
   drawAll();
 }
 
-// キー操作
+
+/* ========================== Responsive Key ========================== */
+
+// stack(up)
+document.getElementById("arrow-up").addEventListener("click", () => {
+  while (checkMove(0, 1)) tetro_y++;
+  downKeySound.play();
+});
+
+// left
+document.getElementById("arrow-left").addEventListener("click", () => {
+  if (checkMove(-1, 0)) tetro_x--;
+});
+
+// rotate
+document.getElementById("key-center").addEventListener("click", () => {
+  let newTetro = rotate();
+  // 回転できるかチェック
+  if (checkMove(0, 0, newTetro)) tetro = newTetro;
+  rotateSound.pause();
+  rotateSound.play();
+});
+
+// right
+document.getElementById("arrow-right").addEventListener("click", () => {
+  if (checkMove(1, 0)) tetro_x++;
+});
+
+// under
+document.getElementById("arrow-under").addEventListener("click", () => {
+  if (checkMove(0, 1)) tetro_y++;
+});
+
+
+
+/* ========================= Key Position ========================== */
+
 document.onkeydown = (e) => {
   // overフラグが立っていたなら即return
   if (over) return;
@@ -522,6 +573,8 @@ document.onkeydown = (e) => {
     if (e.key == " ") onStopButton();
     return;
   }
+
+  console.log("key  --->>> " + e.key)
 
   switch (e.key) {
     case "ArrowLeft":  // left
@@ -538,16 +591,14 @@ document.onkeydown = (e) => {
     case "ArrowDown": // under
       if (checkMove(0, 1)) tetro_y++;
       break;
-    case "Shift": // rotate
-    case "Enter":
+    case "r": // rotate
+    case "R": // rotate
+    case "Enter": // rotate
       let newTetro = rotate();
       // 回転できるかチェック
       if (checkMove(0, 0, newTetro)) tetro = newTetro;
       rotateSound.pause();
       rotateSound.play();
-      break;
-    case " ":
-      onStopButton();
       break;
   }
   // 処理後にもう一度全体を表示
