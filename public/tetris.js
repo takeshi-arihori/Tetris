@@ -19,7 +19,8 @@ btnMenu.addEventListener("click", () => {
   } else {
     btnMenu.textContent = "HOW TO PLAY";
   }
-})
+});
+
 
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Main Screen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -199,7 +200,7 @@ const screenTransition = () => {
   scoreBoardLine.innerHTML = `DELETE LINE : ${deleteLine}`;
 
 
-  const BASE_LEVEL = 2000; // このレベルを基準にlevel-up(game_speed)がupする
+  const BASE_LEVEL = 3000; // このレベルを基準にlevel-up(game_speed)がupする
   let nextLevel = level * BASE_LEVEL; // 次のレベルup
 
   // スコアが一定の点数に到達するとlevel-upする
@@ -525,7 +526,43 @@ function dropTetro() {
   drawAll();
 }
 
-// キー操作
+
+/* ========================== Responsive Key ========================== */
+
+// stack(up)
+document.getElementById("arrow-up").addEventListener("click", () => {
+  while (checkMove(0, 1)) tetro_y++;
+  downKeySound.play();
+});
+
+// left
+document.getElementById("arrow-left").addEventListener("click", () => {
+  if (checkMove(-1, 0)) tetro_x--;
+});
+
+// rotate
+document.getElementById("key-center").addEventListener("click", () => {
+  let newTetro = rotate();
+  // 回転できるかチェック
+  if (checkMove(0, 0, newTetro)) tetro = newTetro;
+  rotateSound.pause();
+  rotateSound.play();
+});
+
+// right
+document.getElementById("arrow-right").addEventListener("click", () => {
+  if (checkMove(1, 0)) tetro_x++;
+});
+
+// under
+document.getElementById("arrow-under").addEventListener("click", () => {
+  if (checkMove(0, 1)) tetro_y++;
+});
+
+
+
+/* ========================= Key Position ========================== */
+
 document.onkeydown = (e) => {
   // overフラグが立っていたなら即return
   if (over) return;
@@ -556,6 +593,7 @@ document.onkeydown = (e) => {
       break;
     case "r": // rotate
     case "R": // rotate
+    case "Enter": // rotate
       let newTetro = rotate();
       // 回転できるかチェック
       if (checkMove(0, 0, newTetro)) tetro = newTetro;

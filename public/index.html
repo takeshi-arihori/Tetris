@@ -26,7 +26,7 @@
           <li class="rule-expray">ゲームのルール</li>
           <li>Level : 1-7 </li>
           <li>Score : 1列 40点, 2列 100点, 3列 400点, 4列 1200点 </li>
-          <li>Next Stage : 2000 Score * level</li>
+          <li>Next Stage : 3000 Score * level</li>
           <br>
           <li class="key-operation">キーボード操作の説明</li>
           <li>← : Left</li>
@@ -34,7 +34,6 @@
           <li>↑ : Stack</li>
           <li>↓ : Down</li>
           <li>R || Enter : Rotate</li>
-          <li>Shift : Pause・ReStart</li>
         </ul>
       </div>
     </header>
@@ -65,12 +64,28 @@
       </div>
 
       <div class="btn-list">
+        <div class="screen-canvas">
+          <canvas id="canvas-side" width="200" height="200"></canvas>
+        </div>
         <div>
           <button id="resetBtn" type="button" class="reset">RESET</button>
         </div>
         <div>
           <button id="onStopBtn" type="button" class="pause">PAUSE</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Responsive -->
+    <div class="responsive">
+      <div class="responsive-operation">
+        <button type="button" id="arrow-up"><img src="img/arrow_up.jpg" width="40" height="40"></button>
+        <div class="btn-center">
+          <button type="button" id="arrow-left"><img src="img/arrow_left.jpg" width="40" height="40"></button>
+          <button type="button" id="key-center"><img src="img/R.png" width="50" height="50"></button>
+          <button type="button" id="arrow-right"><img src="img/arrow_right.jpg" width="40" height="40"></button>
+        </div>
+        <button type="button" id="arrow-under"><img src="img/arrow_under.jpg" width="40" height="40"></button>
       </div>
     </div>
   </div>
