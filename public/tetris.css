@@ -1,6 +1,6 @@
 @charset 'utf-8';
 
-html{
+html {
   font-size: 100%;
   background-color: #000;
 }
@@ -28,7 +28,6 @@ body {
 }
 
 .initial-header h1 {
-  /* <<<<<<<<<<<<<<<<<<<======================== faviconでgameplay説明 */
   font-size: 3em;
   text-align: center;
 }
@@ -72,10 +71,62 @@ body {
   transform: scale(1.1);
 }
 
+/* rule expray
+ -------------------------------- */
 
+.more {
+  color: white; /* <<<<<<<================ test用 */
+}
 
+.rule-expray,
+.key-operation {
+  color: white; /* <<<<<<<================ test用 */
+  text-align: center;
+  list-style-type: none;
+}
 
+#btn-menu {
+  width: 200px;
+  height: 40px;
+  padding: 8px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #1d3557;
+  border: none;
+  border-radius: 24px;
+  user-select: none;
+  cursor: pointer;
+}
 
+#btn-menu:hover {
+  opacity: 0.6;
+}
+
+.more {
+  display: none;
+}
+
+.more ul {
+  margin: 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.more.appear {
+  display: block;
+  animation: 0.5s fadeIn;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
 
 /* main-screen
 ------------------------------ */
@@ -91,7 +142,6 @@ body {
   background-size: contain;
   min-height: 100vh;
 }
-
 
 /* score_display */
 .main-header {
@@ -111,11 +161,11 @@ body {
   color: #f1faee;
 }
 
-.score-board{
+.score-board {
   display: flex;
 }
 
-.score-board li{
+.score-board li {
   list-style-type: none;
   padding: 0 4em;
 }
@@ -144,16 +194,14 @@ body {
   border-radius: 1.2em;
 }
 
-
-
-
 /* --- btn-list --- */
 .btn-list {
   display: flex;
   justify-content: space-between;
 }
 
-#onStopBtn, #resetBtn{
+#onStopBtn,
+#resetBtn {
   padding: 0.7em;
   margin: 1.2em 1.1em;
   background-color: #284b63;

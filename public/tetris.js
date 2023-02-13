@@ -7,6 +7,21 @@ let initial_screen = document.getElementById("initial-screen");
 let main_screen = document.getElementById("main-screen");
 
 
+// ゲーム説明の表示
+const btnMenu = document.getElementById("btn-menu");
+
+btnMenu.addEventListener("click", () => {
+  const more = document.querySelector('.more');
+  more.classList.toggle('appear');
+
+  if (btnMenu.textContent == "HOW TO PLAY") {
+    btnMenu.textContent = "閉じる";
+  } else {
+    btnMenu.textContent = "HOW TO PLAY";
+  }
+})
+
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Main Screen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 
@@ -229,12 +244,12 @@ document.getElementById("gameStart").addEventListener('click', () => {
 /* ========================= setInterval ============================ */
 
 // intervalをclear
-function onClearInterval() {
+const onClearInterval = () => {
   clearInterval(interval);
 }
 
 // intervalをset
-function onSetInterval() {
+const onSetInterval = () => {
   interval = setInterval(dropTetro, game_speed);
 }
 
@@ -273,7 +288,7 @@ const onStopButton = () => {
 
 // HTMLからresetBtnを取得
 document.getElementById("resetBtn").addEventListener("click", (e) => {
-
+  mainSound.pause();
   pauseSelectSound.pause();
   pauseSelectSound.play();
   resetButton(e.target);
@@ -288,10 +303,9 @@ const resetButton = (e) => {
 
   let res = confirm("本当に中断しますか？？");
   if (res) {
-    onClearInterval();
-    displayBlock(initial_screen);
-    displayNone(main_screen);
+    window.location.reload(); // reload
   } else {
+    onClearInterval();
     onSetInterval();
   }
 }
@@ -523,6 +537,8 @@ document.onkeydown = (e) => {
     return;
   }
 
+  console.log("key  --->>> " + e.key)
+
   switch (e.key) {
     case "ArrowLeft":  // left
       if (checkMove(-1, 0)) tetro_x--;
@@ -538,16 +554,13 @@ document.onkeydown = (e) => {
     case "ArrowDown": // under
       if (checkMove(0, 1)) tetro_y++;
       break;
-    case "Shift": // rotate
-    case "Enter":
+    case "r": // rotate
+    case "R": // rotate
       let newTetro = rotate();
       // 回転できるかチェック
       if (checkMove(0, 0, newTetro)) tetro = newTetro;
       rotateSound.pause();
       rotateSound.play();
-      break;
-    case " ":
-      onStopButton();
       break;
   }
   // 処理後にもう一度全体を表示
