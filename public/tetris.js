@@ -1,5 +1,6 @@
 'use strict';
 
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Initial Screen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 // initialPageとmainPageを取得
@@ -20,6 +21,30 @@ btnMenu.addEventListener("click", () => {
     btnMenu.textContent = "HOW TO PLAY";
   }
 });
+
+
+
+// Opening Sound
+let vol = document.getElementById("vol");
+let vol_flag = true;
+
+vol.addEventListener("click", () => {
+  console.log(vol_flag)
+  if(vol_flag == true){
+    initialPageOpeningSound.pause();
+    initialPageOpeningSound.play();
+    vol_flag = false;
+    vol.style.background = "#a8dadc";
+    vol.style.color = "#1d3557";
+    vol.innerHTML = "BGM ON";
+  } else {
+    initialPageOpeningSound.pause();
+    vol_flag = true;
+    vol.style.background = "#1d3557";
+    vol.style.color = "#a8dadc";
+    vol.innerHTML = "BGM OFF";
+  }
+}, false);
 
 
 
@@ -177,7 +202,7 @@ const TETRO_TYPES = [
 
 /* ========================= sounds ============================ */
 
-let initialPageOpeningSound = new Audio("sounds/opening_sound.mp3");
+let initialPageOpeningSound = new Audio("sounds/opening_sound2.mp3");
 let mainSound = new Audio("sounds/game_start_sound.mp3");
 let gameOverSound = new Audio("sounds/game_over.mp3");
 let downKeySound = new Audio("sounds/down_key.mp3");
@@ -236,6 +261,8 @@ document.getElementById("gameStart").addEventListener('click', () => {
 
   displayNone(initial_screen);
   displayBlock(main_screen);
+
+  initialPageOpeningSound.pause();
   mainSound.play();
   init();
   dropTetro();
