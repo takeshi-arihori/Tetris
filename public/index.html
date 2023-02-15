@@ -21,21 +21,22 @@
 
       <div class="select-menu">
         <button type="button" id="btn-menu">HOW TO PLAY</button>
-        <button type="button" id="vol">BGM OFF</button>
+        <button type="button" id="vol-initial">BGM <img id="vol-img" src="img/volume_mute.png" alt="volume画像" width="30" height="30"></button>
       </div>
       <div class="more">
-        <ul>
+        <ul class="expray">
           <li class="rule-expray">ゲームのルール</li>
-          <li>Level : 1-7 </li>
-          <li>Score : 1列 40点, 2列 100点, 3列 400点, 4列 1200点 </li>
-          <li>Next Stage : 3000 Score * level</li>
+          <li><span>Level</span> : 1-7 </li>
+          <li><span>Score</span> : <br>  1列 40点<br>  2列 100点<br>  3列 400点<br>  4列 1200点 </li>
+          <li><span>Next Stage</span> : <br> 3000 × level</li>
           <br>
           <li class="key-operation">キーボード操作の説明</li>
-          <li>← : Left</li>
-          <li>→ : Right</li>
-          <li>↑ : Stack</li>
-          <li>↓ : Down</li>
-          <li>R || Enter : Rotate</li>
+          <li><span>Left</span> : ← </li>
+          <li><span>Right</span> : → </li>
+          <li><span>Stack</span> : ↑ </li>
+          <li><span>Down</span> : ↓ </li>
+          <li><span>Space</span> : Hold</li>
+          <li><span>R || Enter</span> : Rotate</li>
         </ul>
       </div>
     </header>
@@ -61,24 +62,23 @@
     </header>
 
     <div class="main-contents wrapper">
-      <div>
+
+      <div class="info-left">
         <canvas id="canvas"></canvas>
       </div>
 
-      <div class="btn-list">
+      <div class="info-right">
         <div class="screen-canvas">
-          <canvas id="canvas-side" width="200" height="200"></canvas>
+          <canvas id="canvas-side"></canvas>
         </div>
-        <div>
+        <div class="btn-set">
           <button id="resetBtn" type="button" class="reset">RESET</button>
-        </div>
-        <div>
           <button id="onStopBtn" type="button" class="pause">PAUSE</button>
         </div>
       </div>
     </div>
 
-    <!-- Responsive -->
+    <!-- ========================== Compatible with smartphones ========================== -->
     <div class="responsive">
       <div class="responsive-operation">
         <button type="button" id="arrow-up"><img src="img/arrow_up.jpg" width="40" height="40"></button>

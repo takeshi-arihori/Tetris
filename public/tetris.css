@@ -16,6 +16,29 @@ body {
 }
 
 
+/* volume */
+#vol-initial{
+  padding: 0.3em 1.0em;
+  margin: 0 2em;
+  background-color: #1d3557;
+  border: #457b9d solid 2px;
+  color: #f1faee;
+  border-radius: 1.2em;
+}
+
+#vol-img{
+  vertical-align: middle;
+}
+
+#vol-initial:hover{
+  background-color: #a8dadc;
+  color: #1d3557;
+  transform: scale(1.1);
+  opacity: 0.6;
+}
+
+
+
 
 /* initial-screen
 ------------------------------ */
@@ -42,7 +65,7 @@ body {
 }
 
 #btn-menu{
-  padding: 0.7em 1.2em;
+  padding: 0.3em 1.2em;
   margin: 0 2em;
   background-color: #1d3557;
   border: #457b9d solid 2px;
@@ -54,26 +77,78 @@ body {
   background-color: #a8dadc;
   color: #1d3557;
   transform: scale(1.1);
+  opacity: 0.6;
 }
 
-#vol{
-  padding: 0.7em 1.0em;
-  margin: 0 2em;
-  background-color: #1d3557;
-  border: #457b9d solid 2px;
+
+/* rule expray
+-------------------------------- */
+
+.more {
+  display: none;
   color: #f1faee;
-  border-radius: 1.2em;
 }
 
-#vol:hover{
-  background-color: #a8dadc;
-  color: #1d3557;
-  transform: scale(1.1);
+.expray span{
+  font-weight: bold;
+  font-size: 110%;
+  color: #f1faee;
+  text-shadow: 3px 2px 2px #1d3557;
 }
 
-.initial-main {
+.expray li{
+  color: #f1faee;
+  text-align: center;
+}
+
+.rule-expray,
+.key-operation {
+  list-style-type: none;
+  margin-bottom: 1em;
+  font-size: bold;
+  font-weight: bold;
+  text-shadow: 4px 3px 4px #000;
+}
+
+
+.more ul {
+  margin: 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.more.appear {
+  display: block;
+  animation: 1.2s fadeIn;
+  width: 500px;
+  padding: 0.4em;
+  border-radius: 2em;
+  background-color: #1e2b3bdf;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  z-index: 2;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* gameStart
+ ----------------------------------------  */
+ .initial-main {
   text-align: center;
   margin: 5% 0;
+  position: relative;
+  z-index: 1;
 }
 
 #gameStart {
@@ -91,64 +166,9 @@ body {
   transform: scale(1.1);
 }
 
-/* rule expray ~Accordion Menu~
--------------------------------- */
 
-.more {
-  display: none;
-  color: #f1faee;
-}
 
-.rule-expray,
-.key-operation {
-  color: #f1faee; /* <<<<<<<================ test用 */
-  text-align: center;
-  list-style-type: none;
-}
 
-#btn-menu {
-  width: 200px;
-  height: 40px;
-  padding: 8px;
-  font-size: 16px;
-  color: #f1faee;
-  background-color: #1d3557;
-  border: none;
-  border-radius: 24px;
-  user-select: none;
-  cursor: pointer;
-}
-
-#btn-menu:hover {
-  opacity: 0.6;
-}
-
-.more ul {
-  margin: 16px;
-  padding: 0;
-  list-style: none;
-}
-
-.more.appear {
-  display: block;
-  animation: 1.2s fadeIn;
-  width: 500px;
-  margin: 1em auto;
-  padding: 1.3em;
-  border-radius: 2em;
-  background-color: #f1faee4c;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  100% {
-    opacity: 1;
-    transform: none;
-  }
-}
 
 /* main-screen
 ------------------------------ */
@@ -199,6 +219,8 @@ body {
   margin-top: 2.5em;
   width: 85%;
   background-color: #000;
+  vertical-align: bottom;
+
 }
 
 /* canvas */
@@ -216,12 +238,24 @@ body {
   border-radius: 1.2em;
 }
 
-/* --- btn-list --- */
-.btn-list {
-  display: flex;
-  flex-flow: column;
+/* --- info-right --- */
+.info-right {
   justify-content: space-between;
-  margin: 2em;
+  margin-left: 5em;
+  margin-top: 2em;
+  vertical-align: top;
+}
+
+
+/* --- screen-canvas --- */
+
+
+
+
+/* ---------------- button set ------------------ */
+
+.btn-set{
+  margin-top: 4em;
 }
 
 #onStopBtn,
@@ -232,7 +266,6 @@ body {
   color: #f1faee;
   border: #457b9d double 5px;
   border-radius: 1.1em;
-  flex-direction: column;
 }
 
 /* --- onStopBtn --- */
@@ -248,6 +281,7 @@ body {
   color: #a8dadc;
   transform: scale(1.2);
 }
+
 
 /* responsive
  ------------------------------------------- */

@@ -16,7 +16,7 @@ btnMenu.addEventListener("click", () => {
   more.classList.toggle('appear');
 
   if (btnMenu.textContent == "HOW TO PLAY") {
-    btnMenu.textContent = "閉じる";
+    btnMenu.textContent = "CLOSE";
   } else {
     btnMenu.textContent = "HOW TO PLAY";
   }
@@ -24,28 +24,62 @@ btnMenu.addEventListener("click", () => {
 
 
 
-// Opening Sound
-let vol = document.getElementById("vol");
-let vol_flag = true;
+/* ========================= sounds ============================ */
 
-vol.addEventListener("click", () => {
-  console.log(vol_flag)
-  if(vol_flag == true){
+let initialPageOpeningSound = new Audio("sounds/opening_sound2.mp3");
+let mainSound = new Audio("sounds/game_start_sound.mp3");
+let gameOverSound = new Audio("sounds/game_over.mp3");
+let downKeySound = new Audio("sounds/down_key.mp3");
+let stageClearSound = new Audio("sounds/stage_clear.mp3");
+let deleteBlockSound = new Audio("sounds/delete_block.mp3");
+let rotateSound = new Audio("sounds/rotate.mp3");
+let pauseSelectSound = new Audio("sounds/pause_menu.mp3");
+
+
+// volume (defaultはmute)
+let vol_flag = false;
+
+
+// Opening Sound
+let vol_initial = document.getElementById("vol-initial");
+
+// BGM Img Create and Sound Object
+const bgm_img = () => {
+  const innerImg = document.createElement("img");
+  vol_initial.append(innerImg);
+
+  if (!vol_flag) {
+    innerImg.src = "img/volume_mute2.jpg";
+  } else {
+    innerImg.src = "img/volume_on2.jpg"
+  }
+  innerImg.width = 30;
+  innerImg.height = 30;
+  innerImg.style.verticalAlign = "middle";
+  innerImg.style.borderRadius = "50%"
+}
+
+vol_initial.addEventListener("click", () => {
+
+  if (vol_flag == false) {
     initialPageOpeningSound.pause();
     initialPageOpeningSound.play();
-    vol_flag = false;
-    vol.style.background = "#a8dadc";
-    vol.style.color = "#1d3557";
-    vol.innerHTML = "BGM ON";
+    vol_flag = true;
+    vol_initial.style.background = "#a8dadc";
+    vol_initial.style.color = "#1d3557";
+    vol_initial.innerHTML = "BGM ";
+    bgm_img();
+
   } else {
     initialPageOpeningSound.pause();
-    vol_flag = true;
-    vol.style.background = "#1d3557";
-    vol.style.color = "#a8dadc";
-    vol.innerHTML = "BGM OFF";
+    vol_flag = false;
+    vol_initial.style.background = "#1d3557";
+    vol_initial.style.color = "#a8dadc";
+    vol_initial.innerHTML = "BGM";
+    bgm_img();
   }
-}, false);
 
+}, false);
 
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Main Screen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -71,17 +105,24 @@ let field = [];
 
 // ===================== キャンバスAPI ========================
 
-// キャンバスAPIを取得
+// フィールドキャンバスAPIを取得
 let canvas = document.getElementById('canvas');
-
 // フィールドを描画
 let context = canvas.getContext('2d');
-
 // canvasの大きさとborderを定義
 canvas.width = SCREEN_W;
 canvas.height = SCREEN_H;
-canvas.style.border = "3px solid #555";
+canvas.style.border = "4px ridge #a8dadc";
 
+
+
+// サブスクリーンキャンバス
+let screen_can = document.getElementById("canvas-side");
+let screen_con = screen_can.getContext('2d');
+
+screen_can.width = SCREEN_W/2;
+screen_can.height = SCREEN_W/2;
+screen_can.style.border = "3mm ridge #1d3557";
 
 
 
@@ -199,20 +240,6 @@ const TETRO_TYPES = [
 
 
 
-
-/* ========================= sounds ============================ */
-
-let initialPageOpeningSound = new Audio("sounds/opening_sound2.mp3");
-let mainSound = new Audio("sounds/game_start_sound.mp3");
-let gameOverSound = new Audio("sounds/game_over.mp3");
-let downKeySound = new Audio("sounds/down_key.mp3");
-let stageClearSound = new Audio("sounds/stage_clear.mp3");
-let deleteBlockSound = new Audio("sounds/delete_block.mp3");
-let rotateSound = new Audio("sounds/rotate.mp3");
-let pauseSelectSound = new Audio("sounds/pause_menu.mp3");
-
-
-
 /* =========================== Score Display ======================= */
 
 const screenTransition = () => {
@@ -236,7 +263,6 @@ const screenTransition = () => {
     alert(`LEVEL UP!!! YOU ARE ${level} LEVEL!!!`);
     onClearInterval();
     interval = setInterval(dropTetro, game_speed);
-    console.log("GAMESPEED : " + game_speed);
   }
 }
 
@@ -255,7 +281,6 @@ function displayBlock(ele) {
   ele.style.display = "block";
 }
 
-
 /* gameStart()クリック時にinitial-pageとmain-pageを入れ替える */
 document.getElementById("gameStart").addEventListener('click', () => {
 
@@ -263,7 +288,9 @@ document.getElementById("gameStart").addEventListener('click', () => {
   displayBlock(main_screen);
 
   initialPageOpeningSound.pause();
-  mainSound.play();
+
+  // flagがtrueならMainSoundが流れる
+  if (vol_flag) mainSound.play();
   init();
   dropTetro();
 }, false);
@@ -380,7 +407,7 @@ function drawBlock(x, y, c) {
   context.fillStyle = TETRO_COLORS[c];
   context.fillRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
 
-  context.strokeStyle = "white";
+  context.strokeStyle = "#f1faee";
   context.strokeRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
 }
 
@@ -554,38 +581,6 @@ function dropTetro() {
 }
 
 
-/* ========================== Responsive Key ========================== */
-
-// stack(up)
-document.getElementById("arrow-up").addEventListener("click", () => {
-  while (checkMove(0, 1)) tetro_y++;
-  downKeySound.play();
-});
-
-// left
-document.getElementById("arrow-left").addEventListener("click", () => {
-  if (checkMove(-1, 0)) tetro_x--;
-});
-
-// rotate
-document.getElementById("key-center").addEventListener("click", () => {
-  let newTetro = rotate();
-  // 回転できるかチェック
-  if (checkMove(0, 0, newTetro)) tetro = newTetro;
-  rotateSound.pause();
-  rotateSound.play();
-});
-
-// right
-document.getElementById("arrow-right").addEventListener("click", () => {
-  if (checkMove(1, 0)) tetro_x++;
-});
-
-// under
-document.getElementById("arrow-under").addEventListener("click", () => {
-  if (checkMove(0, 1)) tetro_y++;
-});
-
 
 
 /* ========================= Key Position ========================== */
@@ -627,7 +622,46 @@ document.onkeydown = (e) => {
       rotateSound.pause();
       rotateSound.play();
       break;
+    case " ": // hold
+      break;
   }
   // 処理後にもう一度全体を表示
   drawAll();
 };
+
+
+
+
+/* ========================== Compatible with smartphones ========================== */
+
+// stack(up)
+document.getElementById("arrow-up").addEventListener("touchstart", () => {
+  while (checkMove(0, 1)) tetro_y++;
+  downKeySound.play();
+});
+
+// left
+document.getElementById("arrow-left").addEventListener("touchstart", () => {
+  if (checkMove(-1, 0)) tetro_x--;
+});
+
+// rotate
+document.getElementById("key-center").addEventListener("touchstart", () => {
+  let newTetro = rotate();
+  // 回転できるかチェック
+  if (checkMove(0, 0, newTetro)) tetro = newTetro;
+  rotateSound.pause();
+  rotateSound.play();
+  console.log("rotate Sound ; " + vol_flag);
+});
+
+// right
+document.getElementById("arrow-right").addEventListener("touchstart", () => {
+  if (checkMove(1, 0)) tetro_x++;
+});
+
+// under
+document.getElementById("arrow-under").addEventListener("touchstart", () => {
+  if (checkMove(0, 1)) tetro_y++;
+});
+
