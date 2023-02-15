@@ -21,7 +21,7 @@
 
       <div class="select-menu">
         <button type="button" id="btn-menu">HOW TO PLAY</button>
-        <button type="button" id="vol-initial">BGM ON</button>
+        <button type="button" id="vol-initial">BGM <img id="vol-img" src="img/volume_mute.png" alt="volume画像" width="30" height="30"></button>
       </div>
       <div class="more">
         <ul class="expray">
@@ -62,20 +62,18 @@
     </header>
 
     <div class="main-contents wrapper">
-      <div>
+
+      <div class="info-left">
         <canvas id="canvas"></canvas>
       </div>
 
-      <div class="btn-list">
+      <div class="info-right">
         <div class="screen-canvas">
-          <canvas id="canvas-side" width="200" height="200"></canvas>
+          <canvas id="canvas-side"></canvas>
         </div>
-        <div>
+        <div class="btn-set">
           <button id="resetBtn" type="button" class="reset">RESET</button>
-        </div>
-        <div>
           <button id="onStopBtn" type="button" class="pause">PAUSE</button>
-          <button type="button" id="vol-main"></button>
         </div>
       </div>
     </div>

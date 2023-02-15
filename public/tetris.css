@@ -26,6 +26,10 @@ body {
   border-radius: 1.2em;
 }
 
+#vol-img{
+  vertical-align: middle;
+}
+
 #vol-initial:hover{
   background-color: #a8dadc;
   color: #1d3557;
@@ -215,6 +219,8 @@ body {
   margin-top: 2.5em;
   width: 85%;
   background-color: #000;
+  vertical-align: bottom;
+
 }
 
 /* canvas */
@@ -232,12 +238,24 @@ body {
   border-radius: 1.2em;
 }
 
-/* --- btn-list --- */
-.btn-list {
-  display: flex;
-  flex-flow: column;
+/* --- info-right --- */
+.info-right {
   justify-content: space-between;
-  margin: 2em;
+  margin-left: 5em;
+  margin-top: 2em;
+  vertical-align: top;
+}
+
+
+/* --- screen-canvas --- */
+
+
+
+
+/* ---------------- button set ------------------ */
+
+.btn-set{
+  margin-top: 4em;
 }
 
 #onStopBtn,
@@ -248,7 +266,6 @@ body {
   color: #f1faee;
   border: #457b9d double 5px;
   border-radius: 1.1em;
-  flex-direction: column;
 }
 
 /* --- onStopBtn --- */
@@ -264,6 +281,7 @@ body {
   color: #a8dadc;
   transform: scale(1.2);
 }
+
 
 /* responsive
  ------------------------------------------- */
