@@ -473,7 +473,7 @@ body {
   display: none;
 }
 
-@media (max-width: 500px) {
+@media screen and (max-width: 767px) {
   .responsive {
     color: #f1faee;
     display: block;

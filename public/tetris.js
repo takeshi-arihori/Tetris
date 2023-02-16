@@ -7,7 +7,7 @@ window.onload = () => {
   setTimeout(() => {
     initial_screen.style.display = "block";
     document.getElementById("load").style.display = "none";
-  }, 4000);
+  }, 3000);
 }
 
 
@@ -38,7 +38,9 @@ btnMenu.addEventListener("click", () => {
 /* ========================= sounds ============================ */
 
 let initialPageOpeningSound = new Audio("sounds/opening_sound2.mp3");
+initialPageOpeningSound.volume = 0.7;
 let mainSound = new Audio("sounds/game_start_sound.mp3");
+mainSound.volume = 0.4;
 let gameOverSound = new Audio("sounds/game_over.mp3");
 let downKeySound = new Audio("sounds/down_key.mp3");
 let stageClearSound = new Audio("sounds/stage_clear.mp3");
@@ -272,8 +274,7 @@ const screenTransition = () => {
   if ((scoreCount >= nextLevel) && (game_speed !== 100)) {
     level++;
     game_speed -= 100;
-    stageClearSound.play();
-    alert(`LEVEL UP!!! YOU ARE ${level} LEVEL!!!`);
+    if (vol_flag) stageClearSound.play();
     onClearInterval();
     interval = setInterval(dropTetro, game_speed);
   }
@@ -328,9 +329,11 @@ const onSetInterval = () => {
 
 // HTMLからonStopBtnを取得
 document.getElementById("onStopBtn").addEventListener("click", () => {
-  mainSound.pause();
-  pauseSelectSound.pause();
-  pauseSelectSound.play();
+  if(vol_flag){
+    mainSound.pause();
+    pauseSelectSound.pause();
+    pauseSelectSound.play();
+  }
   onStopButton();
 })
 
@@ -349,6 +352,10 @@ const onStopButton = () => {
     onSetInterval();
     document.getElementById("onStopBtn").innerHTML = "PAUSE";
     repeatFlag = true;
+    if (vol_flag) {
+      mainSound.play();
+      mainSound.loop = true;
+    }
   }
 
 }
@@ -359,9 +366,11 @@ const onStopButton = () => {
 
 // HTMLからresetBtnを取得
 document.getElementById("resetBtn").addEventListener("click", (e) => {
-  mainSound.pause();
-  pauseSelectSound.pause();
-  pauseSelectSound.play();
+  if(vol_flag){
+    mainSound.pause();
+    pauseSelectSound.pause();
+    pauseSelectSound.play();
+  }
   resetButton(e.target);
 })
 
@@ -378,6 +387,10 @@ const resetButton = (e) => {
   } else {
     onClearInterval();
     onSetInterval();
+    if (vol_flag) {
+      mainSound.play();
+      mainSound.loop = true;
+    }
   }
 }
 
@@ -611,8 +624,6 @@ document.onkeydown = (e) => {
     if (e.key == " ") onStopButton();
     return;
   }
-
-  console.log("key  --->>> " + e.key)
 
   switch (e.key) {
     case "ArrowLeft":  // left
