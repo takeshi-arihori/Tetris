@@ -1,11 +1,22 @@
 'use strict';
 
 
+/* ~~~~~~~~~~~~~~~~~~~~~~~~ Loading Screen ~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+window.onload = () => {
+  setTimeout(() => {
+    initial_screen.style.display = "block";
+    document.getElementById("load").style.display = "none";
+  }, 4000);
+}
+
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Initial Screen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 // initialPageとmainPageを取得
 let initial_screen = document.getElementById("initial-screen");
 let main_screen = document.getElementById("main-screen");
+
 
 
 // ゲーム説明の表示
@@ -36,12 +47,13 @@ let rotateSound = new Audio("sounds/rotate.mp3");
 let pauseSelectSound = new Audio("sounds/pause_menu.mp3");
 
 
-// volume (defaultはmute)
+// volume
 let vol_flag = false;
 
 
 // Opening Sound
 let vol_initial = document.getElementById("vol-initial");
+
 
 // BGM Img Create and Sound Object
 const bgm_img = () => {
@@ -64,6 +76,7 @@ vol_initial.addEventListener("click", () => {
   if (vol_flag == false) {
     initialPageOpeningSound.pause();
     initialPageOpeningSound.play();
+    initialPageOpeningSound.loop = true;
     vol_flag = true;
     vol_initial.style.background = "#a8dadc";
     vol_initial.style.color = "#1d3557";
@@ -120,8 +133,8 @@ canvas.style.border = "4px ridge #a8dadc";
 let screen_can = document.getElementById("canvas-side");
 let screen_con = screen_can.getContext('2d');
 
-screen_can.width = SCREEN_W/2;
-screen_can.height = SCREEN_W/2;
+screen_can.width = SCREEN_W / 2;
+screen_can.height = SCREEN_W / 2;
 screen_can.style.border = "3mm ridge #1d3557";
 
 
@@ -290,7 +303,10 @@ document.getElementById("gameStart").addEventListener('click', () => {
   initialPageOpeningSound.pause();
 
   // flagがtrueならMainSoundが流れる
-  if (vol_flag) mainSound.play();
+  if (vol_flag) {
+    mainSound.play();
+    mainSound.loop = true;
+  }
   init();
   dropTetro();
 }, false);

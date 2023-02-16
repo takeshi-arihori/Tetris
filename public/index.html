@@ -14,29 +14,44 @@
 </head>
 
 <body>
+  <!--=================== loading =====================-->
+
+  <!-- ローディング画面 -->
+  <div id="load">
+    <div>G</div>
+    <div>N</div>
+    <div>I</div>
+    <div>D</div>
+    <div>A</div>
+    <div>O</div>
+    <div>L</div>
+  </div>
+
   <!--================ Initial Screen ===================-->
+
   <div id="initial-screen">
     <header class="initial-header wrapper">
       <h1><img src="img/tetrisHead_initialPage.png" alt="tetris画像(文字)"></h1>
 
       <div class="select-menu">
         <button type="button" id="btn-menu">HOW TO PLAY</button>
-        <button type="button" id="vol-initial">BGM <img id="vol-img" src="img/volume_mute.png" alt="volume画像" width="30" height="30"></button>
+        <button type="button" id="vol-initial">BGM <img id="vol-img" src="img/volume_mute.png" alt="volume画像" width="30"
+            height="30"></button>
       </div>
       <div class="more">
         <ul class="expray">
           <li class="rule-expray">ゲームのルール</li>
-          <li><span>Level</span> : 1-7 </li>
-          <li><span>Score</span> : <br>  1列 40点<br>  2列 100点<br>  3列 400点<br>  4列 1200点 </li>
-          <li><span>Next Stage</span> : <br> 3000 × level</li>
+          <li><span>Level</span> : 1〜7(MAX) </li>
+          <li><span>Score</span> : <br> 1列 40点<br> 2列 100点<br> 3列 400点<br> 4列 1200点 </li>
+          <li><span>Next Stage</span> : <br> 3000 × LEVEL</li>
           <br>
           <li class="key-operation">キーボード操作の説明</li>
           <li><span>Left</span> : ← </li>
           <li><span>Right</span> : → </li>
           <li><span>Stack</span> : ↑ </li>
           <li><span>Down</span> : ↓ </li>
-          <li><span>Space</span> : Hold</li>
-          <li><span>R || Enter</span> : Rotate</li>
+          <li><span>Space</span> : HOLD</li>
+          <li><span>R</span> : 回転</li>
         </ul>
       </div>
     </header>
