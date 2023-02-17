@@ -1,14 +1,22 @@
 'use strict';
 
+/* =============================== Initial Screen =============================== */
 
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Initial Screen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* --- loading画面 --- */
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    initial_screen.style.display = "block";
+    document.getElementById("load").style.display = "none";
+  }, 4000);
+})
 
-// initialPageとmainPageを取得
+
+// initialPageとmainPageの取得
 let initial_screen = document.getElementById("initial-screen");
 let main_screen = document.getElementById("main-screen");
 
 
-// ゲーム説明の表示
+/* --- ゲーム説明 --- */
 const btnMenu = document.getElementById("btn-menu");
 
 btnMenu.addEventListener("click", () => {
@@ -23,11 +31,15 @@ btnMenu.addEventListener("click", () => {
 });
 
 
-
-/* ========================= sounds ============================ */
-
+/* --- BGM --- */
 let initialPageOpeningSound = new Audio("sounds/opening_sound2.mp3");
-let mainSound = new Audio("sounds/game_start_sound.mp3");
+initialPageOpeningSound.volume = 0.7;
+let mainSound = new Audio("sounds/【TETRIS】Main_BGM メドレー 1 - from YouTube.mp3");
+mainSound.volume = 0.4;
+let semiFinalStageSound = new Audio("sounds/semifinal_stage_main_sound.mp3");
+semiFinalStageSound.volume = 0.4;
+let finalStageSound = new Audio("sounds/final_stage_main_sound.mp3");
+finalStageSound.volume = 0.4;
 let gameOverSound = new Audio("sounds/game_over.mp3");
 let downKeySound = new Audio("sounds/down_key.mp3");
 let stageClearSound = new Audio("sounds/stage_clear.mp3");
@@ -36,56 +48,70 @@ let rotateSound = new Audio("sounds/rotate.mp3");
 let pauseSelectSound = new Audio("sounds/pause_menu.mp3");
 
 
-// volume (defaultはmute)
+// サウンドフラグ
 let vol_flag = false;
 
 
-// Opening Sound
+
+// サウンドボタン
 let vol_initial = document.getElementById("vol-initial");
+// サウンドボタン画像
+let vol_img = document.getElementById("vol-img");
 
-// BGM Img Create and Sound Object
-const bgm_img = () => {
-  const innerImg = document.createElement("img");
-  vol_initial.append(innerImg);
-
+/* --- サウンドボタンの画像切り替え --- */
+const changeVolImg = (img) => {
   if (!vol_flag) {
-    innerImg.src = "img/volume_mute2.jpg";
+    img.src = "img/volume_mute2.jpg";
   } else {
-    innerImg.src = "img/volume_on2.jpg"
+    img.src = "img/volume_on2.jpg";
   }
-  innerImg.width = 30;
-  innerImg.height = 30;
-  innerImg.style.verticalAlign = "middle";
-  innerImg.style.borderRadius = "50%"
+  img.width = 30;
+  img.height = 30;
+  img.style.verticalAlign = "middle";
+  img.style.borderRadius = "50%"
 }
 
-vol_initial.addEventListener("click", () => {
-
-  if (vol_flag == false) {
-    initialPageOpeningSound.pause();
-    initialPageOpeningSound.play();
-    vol_flag = true;
-    vol_initial.style.background = "#a8dadc";
-    vol_initial.style.color = "#1d3557";
-    vol_initial.innerHTML = "BGM ";
-    bgm_img();
-
-  } else {
+/* --- オープニングサウンドの切り替え --- */
+const sound_play_main = () => {
+  if (vol_flag) {
     initialPageOpeningSound.pause();
     vol_flag = false;
-    vol_initial.style.background = "#1d3557";
-    vol_initial.style.color = "#a8dadc";
-    vol_initial.innerHTML = "BGM";
-    bgm_img();
+  } else {
+    initialPageOpeningSound.pause();
+    initialPageOpeningSound.play();
+    initialPageOpeningSound.loop = true;
+    vol_flag = true;
   }
+}
 
+/* --- サウンドボタン表示切り替え --- */
+const toggleVolume = (btn) => {
+  if (vol_flag) {
+    btn.style.background = "#1d3557";
+    btn.style.color = "#a8dadc";
+    btn.innerHTML = "BGM";
+  } else {
+    btn.style.background = "#a8dadc";
+    btn.style.color = "#1d3557";
+    btn.innerHTML = "BGM ";
+  }
+}
+
+/* --- サウンドON or OFF・サウンド画像切り替え --- */
+vol_initial.addEventListener("click", () => {
+  sound_play_main();
+  toggleVolume(vol_initial);
+  changeVolImg(vol_img);
+
+  vol_initial.append(vol_img);
 }, false);
 
 
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Main Screen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 
-// ========================== field ===========================
+/* =============================== Main Screen =============================== */
+
+
 // 1ブロックのサイズ
 const BLOCK_SIZE = 25;
 
@@ -103,30 +129,28 @@ const SCREEN_H = BLOCK_SIZE * FIELD_ROW;
 // フィールド ({FIELD_COL * FIELD_ROW} を格納する配列)
 let field = [];
 
-// ===================== キャンバスAPI ========================
 
-// フィールドキャンバスAPIを取得
+
+/* --- キャンバスAPIを取得してフィールドを描画 --- */
+/* --- メインスクリーンキャンバス --- */
 let canvas = document.getElementById('canvas');
-// フィールドを描画
 let context = canvas.getContext('2d');
-// canvasの大きさとborderを定義
+
 canvas.width = SCREEN_W;
 canvas.height = SCREEN_H;
 canvas.style.border = "4px ridge #a8dadc";
 
 
 
-// サブスクリーンキャンバス
+/* --- サブスクリーンキャンバス --- */
 let screen_can = document.getElementById("canvas-side");
 let screen_con = screen_can.getContext('2d');
 
-screen_can.width = SCREEN_W/2;
-screen_can.height = SCREEN_W/2;
+screen_can.width = SCREEN_W / 2;
+screen_can.height = SCREEN_W / 2;
 screen_can.style.border = "3mm ridge #1d3557";
 
 
-
-// ======================== テトロミノ ========================
 
 // テトロミノ
 let tetro;
@@ -151,13 +175,8 @@ let interval;
 // Game Over判定
 let over = false;
 
-
-
-
-// ======================== Game play ========================
-
 // Game Speed
-let game_speed = 800;
+let game_speed = 1000;
 
 // Level
 let level = 1;
@@ -168,189 +187,246 @@ let scoreCount = 0;
 // 消したライン数
 let deleteLine = 0;
 
-// scoreList(消した列により得点が変動する)
-// level * 列のScore -> TotalScore
-const scoreList = {
+/* --- scoreリスト --- */
+const scoreList =
+{
   1: 40, // 1列 : 40 Score
   2: 100, // 2列 : 100 Score
   3: 400, // 3列 : 400 Score
   4: 1200, // 4列 : 1200 Score
 }
 
-
-// テトロミノの色
-const TETRO_COLORS = [
-  "#000",
-  "#6cf",
-  "#fb2",
-  "#66f",
-  "#c5c",
-  "#fd2",
-  "#f44",
-  "#6b6",
-];
-
-
-// テトロミノのType
-const TETRO_TYPES = [
-  [],
+/* --- テトロミノの色 --- */
+const TETRO_COLORS =
   [
-    [0, 0, 0, 0],
-    [1, 1, 1, 1],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ],
-  [
-    [0, 1, 0, 0],
-    [0, 1, 0, 0],
-    [0, 1, 1, 0],
-    [0, 0, 0, 0],
-  ],
-  [
-    [0, 0, 1, 0],
-    [0, 0, 1, 0],
-    [0, 1, 1, 0],
-    [0, 0, 0, 0],
-  ],
-  [
-    [0, 1, 0, 0],
-    [0, 1, 1, 0],
-    [0, 1, 0, 0],
-    [0, 0, 0, 0],
-  ],
-  [
-    [0, 0, 0, 0],
-    [0, 1, 1, 0],
-    [0, 1, 1, 0],
-    [0, 0, 0, 0],
-  ],
-  [
-    [0, 0, 0, 0],
-    [1, 1, 0, 0],
-    [0, 1, 1, 0],
-    [0, 0, 0, 0],
-  ],
-  [
-    [0, 0, 0, 0],
-    [0, 1, 1, 0],
-    [1, 1, 0, 0],
-    [0, 0, 0, 0],
-  ],
-]
+    "#000",             // 0: 黒
+    "#6cf",             // 1: 水色
+    "#fb2",             // 2: オレンジ
+    "#66f",             // 3: 青
+    "#c5c",             // 4: 紫
+    "#fd2",             // 5: 黄色
+    "#f44",             // 6: 赤
+    "#6b6",             // 7: 緑
+  ];
 
 
+/* --- テトロミノのType --- */
+const TETRO_TYPES =
+  [
+    [],
+    // I
+    [
+      [0, 0, 0, 0],
+      [1, 1, 1, 1],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+    // L
+    [
+      [0, 1, 0, 0],
+      [0, 1, 0, 0],
+      [0, 1, 1, 0],
+      [0, 0, 0, 0],
+    ],
+    // J
+    [
+      [0, 0, 1, 0],
+      [0, 0, 1, 0],
+      [0, 1, 1, 0],
+      [0, 0, 0, 0],
+    ],
+    // T
+    [
+      [0, 1, 0, 0],
+      [0, 1, 1, 0],
+      [0, 1, 0, 0],
+      [0, 0, 0, 0],
+    ],
+    // O
+    [
+      [0, 0, 0, 0],
+      [0, 1, 1, 0],
+      [0, 1, 1, 0],
+      [0, 0, 0, 0],
+    ],
+    // Z
+    [
+      [0, 0, 0, 0],
+      [1, 1, 0, 0],
+      [0, 1, 1, 0],
+      [0, 0, 0, 0],
+    ],
+    // S
+    [
+      [0, 0, 0, 0],
+      [0, 1, 1, 0],
+      [1, 1, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ]
 
-/* =========================== Score Display ======================= */
 
+/* --- メインサウンドプレイ --- */
+const soundPlay = () => {
+  // ファイナルステージ
+  if (game_speed == 100) {
+    semiFinalStageSound.pause();
+    finalStageSound.play();
+    finalStageSound.loop = true;
+    // セミファイナルステージ
+  }
+  else if (game_speed == 200) {
+    mainSound.pause();
+    semiFinalStageSound.play();
+    semiFinalStageSound.loop = true
+  }
+  else {
+    // その他のステージ
+    mainSound.pause();
+    mainSound.play();
+    mainSound.loop = true;
+  }
+}
+
+/* --- メインサウンドプレイストップ --- */
+const soundPause = () => {
+  // ファイナルステージ
+  if (game_speed == 100) {
+    finalStageSound.pause();
+    // セミファイナルステージ
+  }
+  else if (game_speed == 200) {
+    semiFinalStageSound.pause();
+  }
+  else {
+    // その他のステージ
+    mainSound.pause();
+  }
+}
+
+
+/* --- スコア画面・レベル別サウンド設定 --- */
 const screenTransition = () => {
   let scoreBoardLevel = document.getElementById("level");
   let scoreBoardCount = document.getElementById("score-count");
   let scoreBoardLine = document.getElementById("line-count");
 
+  // スクリーンに表示
   scoreBoardLevel.innerHTML = `LEVEL : ${level}`;
   scoreBoardCount.innerHTML = `SCORE : ${scoreCount}`;
   scoreBoardLine.innerHTML = `DELETE LINE : ${deleteLine}`;
 
+  // 次のレベルまでのスコア
+  const UP_TO_NEXT = 3000;
+  let nextLevel = level * UP_TO_NEXT;
 
-  const BASE_LEVEL = 3000; // このレベルを基準にlevel-up(game_speed)がupする
-  let nextLevel = level * BASE_LEVEL; // 次のレベルup
-
-  // スコアが一定の点数に到達するとlevel-upする
+  // スコアが一定の点数に到達するとレベルアップ
   if ((scoreCount >= nextLevel) && (game_speed !== 100)) {
     level++;
     game_speed -= 100;
-    stageClearSound.play();
-    alert(`LEVEL UP!!! YOU ARE ${level} LEVEL!!!`);
+
+    if (vol_flag) {
+      // ステージクリア音
+      stageClearSound.play();
+    };
+    // <<<<<<<<<<<<<<<<<<<<<<<================================================  pop設定未定
     onClearInterval();
     interval = setInterval(dropTetro, game_speed);
+  }
+  // ゲームスピードに応じてサウンドを変化
+  if(vol_flag){
+    soundPlay();
   }
 }
 
 
-/* ========================= game start =========================== */
-
-// d-blockをd-noneに変更
+// blockをnoneに変更
 function displayNone(ele) {
   ele.style.display = "block";
   ele.style.display = "none";
 }
 
-// d-noneをd-blockに変更
+// noneをblockに変更
 function displayBlock(ele) {
   ele.style.display = "none";
   ele.style.display = "block";
 }
 
-/* gameStart()クリック時にinitial-pageとmain-pageを入れ替える */
+/* --- メインページへの切り替え・ゲームスタート --- */
 document.getElementById("gameStart").addEventListener('click', () => {
-
   displayNone(initial_screen);
   displayBlock(main_screen);
 
   initialPageOpeningSound.pause();
-
-  // flagがtrueならMainSoundが流れる
-  if (vol_flag) mainSound.play();
+  if (vol_flag) {
+    soundPlay();
+  }
+  // フィールドの初期化
   init();
+  // テトロミノを落下させる
   dropTetro();
 }, false);
 
 
-/* ========================= setInterval ============================ */
 
-// intervalをclear
+/* --- インターバルをクリア --- */
 const onClearInterval = () => {
   clearInterval(interval);
 }
 
-// intervalをset
+/* --- インターバルをセット --- */
 const onSetInterval = () => {
   interval = setInterval(dropTetro, game_speed);
 }
 
-/* ================================ Pause・ReStart ================================ */
 
-// HTMLからonStopBtnを取得
-document.getElementById("onStopBtn").addEventListener("click", () => {
-  mainSound.pause();
-  pauseSelectSound.pause();
-  pauseSelectSound.play();
+
+// ストップ or リスタート フラグ
+let stopOrRestart = true;
+
+/* --- ゲームリスタート・ストップ --- */
+let onStopBtn = document.getElementById("onStopBtn");
+onStopBtn.addEventListener("click", () => {
   onStopButton();
-})
+}, false)
 
-let repeatFlag = true; // pause時はfalse;
-
-// ReStart・Pause
 const onStopButton = () => {
+  if (vol_flag) {
+    pauseSelectSound.pause();
+    pauseSelectSound.play();
+  }
 
-  if (repeatFlag == true) {
+  if (stopOrRestart == true) {
     onClearInterval();
+    soundPause();
     document.getElementById("onStopBtn").innerHTML = "RESTART";
-    repeatFlag = false;
-
-  } else {
+    stopOrRestart = false;
+  }
+  else {
     onClearInterval();
     onSetInterval();
     document.getElementById("onStopBtn").innerHTML = "PAUSE";
-    repeatFlag = true;
+    stopOrRestart = true;
+    if (vol_flag) {
+      soundPlay();
+    }
   }
-
 }
 
 
 
-/* ================================ Reset ============================== */
 
-// HTMLからresetBtnを取得
-document.getElementById("resetBtn").addEventListener("click", (e) => {
-  mainSound.pause();
+/* --- リセット --- */
+let resetBtn = document.getElementById("resetBtn");
+
+resetBtn.addEventListener("click", (e) => {
+  soundPause();
   pauseSelectSound.pause();
   pauseSelectSound.play();
   resetButton(e.target);
-})
+}, false);
 
 const resetButton = (e) => {
-
   // pauseしていなければ一旦pauseする
   if (e.classList.contains("pause")) {
     onClearInterval();
@@ -358,17 +434,40 @@ const resetButton = (e) => {
 
   let res = confirm("本当に中断しますか？？");
   if (res) {
-    window.location.reload(); // reload
+    // リセット
+    window.location.reload();
   } else {
+    // ゲームリスタート
     onClearInterval();
     onSetInterval();
+    if (vol_flag) {
+      soundPlay();
+    }
   }
 }
 
 
 
-/* ================================ 初期化 ==================================== */
+/* --- メイン画面 ミュートOn・Off --- */
+const main_vol = document.getElementById("main-vol");
+const mute_img = document.getElementById("mute-img");
 
+main_vol.addEventListener("click", () => {
+  if(vol_flag){
+    soundPause();
+    vol_flag = false;
+  } else {
+    soundPlay();
+    vol_flag = true;
+  }
+  toggleVolume(main_vol);
+  changeVolImg(mute_img);
+  main_vol.append(mute_img);
+}, false);
+
+
+
+/* --- 初期化 --- */
 function init() {
   // フィールドをクリア
   for (let y = 0; y < FIELD_ROW; y++) {
@@ -378,27 +477,29 @@ function init() {
     }
   }
 
-  // 最初のテトロのためネクスト入れる
+  // 次のテトロタイプのインデックスを生成
   tetro_n = Math.floor(Math.random() * (TETRO_TYPES.length - 1)) + 1;
-
   setTetro();
   drawAll();
+  nextTetro(); // <<<<<<<<<<<<<<<=============================================== setteityuu
   interval = setInterval(dropTetro, game_speed);
 }
 
-/* ============================= Next Tetro ============================ */
 
+/* --- テトロミノの準備 --- */
 function setTetro() {
-  // ネクストを現在のテトロにする
+  // 次のテトロタイプのインデックス
   tetro_t = tetro_n;
+  // テトロタイプから配列を取得
   tetro = TETRO_TYPES[tetro_t];
+  // 次のテトロタイプのインデックスを生成
   tetro_n = Math.floor(Math.random() * (TETRO_TYPES.length - 1)) + 1;
-
+  // テトロミノの落下地点の座標
   tetro_x = START_X;
   tetro_y = START_Y;
 }
 
-
+/* --- テトリミノを生成 --- */
 function drawBlock(x, y, c) {
   // ブロックサイズを代入
   let px = x * BLOCK_SIZE;
@@ -411,14 +512,17 @@ function drawBlock(x, y, c) {
   context.strokeRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
 }
 
-// 全てを描画
-function drawAll() {
 
+
+/* --- フィールドの描画 --- */
+function drawAll() {
   // フィールドをクリアにする
   context.clearRect(0, 0, SCREEN_W, SCREEN_H);
 
+  /* --- フィールド全体の描画 --- */
   for (let y = 0; y < FIELD_ROW; y++) {
     for (let x = 0; x < FIELD_COL; x++) {
+      // フィールド上にテトロミノが存在するかチェック
       if (field[y][x]) {
         drawBlock(x, y, field[y][x]);
       }
@@ -438,11 +542,6 @@ function drawAll() {
         // 本体
         drawBlock(tetro_x + x, tetro_y + y, tetro_t);
       }
-
-      // Next tetro
-      if (TETRO_TYPES[tetro_n][y][x]) {
-        drawBlock(13 + x, 4 + y, tetro_n);
-      }
     }
   }
 
@@ -458,9 +557,17 @@ function drawAll() {
     context.fillStyle = "white";
     context.fillText(s, x, y);
     mainSound.pause();
+    semiFinalStageSound.pause();
+    finalStageSound.pause();
     gameOverSound.play();
   }
 
+}
+
+
+/* --- ネクストテトロ --- */
+const nextTetro = () => {
+  console.log("next")
 }
 
 
@@ -475,7 +582,7 @@ function checkMove(mx, my, newTetro) {
       let ny = tetro_y + my + y;
 
       if (newTetro[y][x]) {
-        // テトロミノのフィールドスペースを制限
+        // テトロミノのフィールドスペースを制限 <<<<<<<<<<<<<=================== Tスピン、、、、
         if (
           ny < 0 ||
           nx < 0 ||
@@ -550,10 +657,12 @@ function checkLine() {
     deleteLine += lineCount;
     // scoreの計算
     scoreCount += scoreList[lineCount];
-    deleteBlockSound.play();
-    // displayの更新
-    screenTransition();
+    if(vol_flag){
+      deleteBlockSound.play();
+    }
   }
+  // score-displayの更新
+  screenTransition();
 }
 
 
@@ -582,86 +691,92 @@ function dropTetro() {
 
 
 
-
 /* ========================= Key Position ========================== */
 
+
 document.onkeydown = (e) => {
-  // overフラグが立っていたなら即return
+  // GameOver時はreturn
   if (over) return;
 
-  // Pause時にキー操作を無効にする
-  if (!repeatFlag) {
+  // Pause時キーボード操作無効
+  if (!stopOrRestart) {
     e.preventDefault();
     if (e.key == " ") onStopButton();
     return;
   }
 
-  console.log("key  --->>> " + e.key)
-
   switch (e.key) {
-    case "ArrowLeft":  // left
+    // 左
+    case "ArrowLeft":
       if (checkMove(-1, 0)) tetro_x--;
       break;
-    case "ArrowRight": // right
+    // 右
+    case "ArrowRight":
       if (checkMove(1, 0)) tetro_x++;
       break;
-    case "ArrowUp": // under
-      // ↑キーは一番下までブロックが一瞬で移動するようにする
+    // 最下部まで一気に落下
+    case "ArrowUp":
       while (checkMove(0, 1)) tetro_y++;
-      downKeySound.play();
+      if (vol_flag) {
+        downKeySound.play();
+      }
       break;
-    case "ArrowDown": // under
+    // 下
+    case "ArrowDown":
       if (checkMove(0, 1)) tetro_y++;
       break;
-    case "r": // rotate
-    case "R": // rotate
-    case "Enter": // rotate
+    // 回転
+    case "r":
+    case "R":
       let newTetro = rotate();
-      // 回転できるかチェック
       if (checkMove(0, 0, newTetro)) tetro = newTetro;
-      rotateSound.pause();
-      rotateSound.play();
-      break;
-    case " ": // hold
+      if (vol_flag) {
+        rotateSound.pause();
+        rotateSound.play();
+        console.log("rotate Soundおおおおおお ; " + vol_flag);
+      }
       break;
   }
-  // 処理後にもう一度全体を表示
+
+  // 全体表示
   drawAll();
 };
 
 
 
 
-/* ========================== Compatible with smartphones ========================== */
+// /* ========================== Compatible with smartphones ========================== */
 
-// stack(up)
-document.getElementById("arrow-up").addEventListener("touchstart", () => {
-  while (checkMove(0, 1)) tetro_y++;
-  downKeySound.play();
-});
+// // stack(up)
+// document.getElementById("arrow-up").addEventListener("touchstart", () => {
+//   while (checkMove(0, 1)) tetro_y++;
+//   downKeySound.play();
+// });
 
-// left
-document.getElementById("arrow-left").addEventListener("touchstart", () => {
-  if (checkMove(-1, 0)) tetro_x--;
-});
+// // left
+// document.getElementById("arrow-left").addEventListener("touchstart", () => {
+//   if (checkMove(-1, 0)) tetro_x--;
+// });
 
-// rotate
-document.getElementById("key-center").addEventListener("touchstart", () => {
-  let newTetro = rotate();
-  // 回転できるかチェック
-  if (checkMove(0, 0, newTetro)) tetro = newTetro;
-  rotateSound.pause();
-  rotateSound.play();
-  console.log("rotate Sound ; " + vol_flag);
-});
+// // rotate
+// document.getElementById("key-center").addEventListener("touchstart", () => {
+//   let newTetro = rotate();
+//   // 回転できるかチェック
+//   if (checkMove(0, 0, newTetro)) tetro = newTetro;
+//   if (vol_flag) {
+//     rotateSound.pause();
+//     rotateSound.play();
+//   }
+//   console.log("rotate Soundおおおおおお ; " + vol_flag);
+// });
 
-// right
-document.getElementById("arrow-right").addEventListener("touchstart", () => {
-  if (checkMove(1, 0)) tetro_x++;
-});
+// // right
+// document.getElementById("arrow-right").addEventListener("touchstart", () => {
+//   if (checkMove(1, 0)) tetro_x++;
+// });
 
-// under
-document.getElementById("arrow-under").addEventListener("touchstart", () => {
-  if (checkMove(0, 1)) tetro_y++;
-});
+// // under
+// document.getElementById("arrow-under").addEventListener("touchstart", () => {
+//   if (checkMove(0, 1)) tetro_y++;
+// });
 

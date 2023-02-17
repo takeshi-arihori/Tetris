@@ -15,10 +15,190 @@ body {
   margin: 0 auto;
 }
 
+/* ================ loaded screen ============== */
+
+.initial-screen {
+  display: block;
+}
+
+#load {
+  position: absolute;
+  width: 600px;
+  height: 36px;
+  left: 50%;
+  top: 40%;
+  margin-left: -300px;
+  overflow: visible;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+#load div {
+  position: absolute;
+  width: 20px;
+  height: 36px;
+  opacity: 0;
+  font-family: Helvetica, Arial, sans-serif;
+  animation: move 2s linear infinite;
+  -o-animation: move 2s linear infinite;
+  -moz-animation: move 2s linear infinite;
+  -webkit-animation: move 2s linear infinite;
+  transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  color: #a8dadc;
+}
+
+#load div:nth-child(2) {
+  animation-delay: 0.2s;
+  -o-animation-delay: 0.2s;
+  -moz-animation-delay: 0.2s;
+  -webkit-animation-delay: 0.2s;
+}
+#load div:nth-child(3) {
+  animation-delay: 0.4s;
+  -o-animation-delay: 0.4s;
+  -webkit-animation-delay: 0.4s;
+  -webkit-animation-delay: 0.4s;
+}
+#load div:nth-child(4) {
+  animation-delay: 0.6s;
+  -o-animation-delay: 0.6s;
+  -moz-animation-delay: 0.6s;
+  -webkit-animation-delay: 0.6s;
+}
+#load div:nth-child(5) {
+  animation-delay: 0.8s;
+  -o-animation-delay: 0.8s;
+  -moz-animation-delay: 0.8s;
+  -webkit-animation-delay: 0.8s;
+}
+#load div:nth-child(6) {
+  animation-delay: 1s;
+  -o-animation-delay: 1s;
+  -moz-animation-delay: 1s;
+  -webkit-animation-delay: 1s;
+}
+#load div:nth-child(7) {
+  animation-delay: 1.2s;
+  -o-animation-delay: 1.2s;
+  -moz-animation-delay: 1.2s;
+  -webkit-animation-delay: 1.2s;
+}
+
+@keyframes move {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  35% {
+    left: 41%;
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  65% {
+    left: 59%;
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    -moz-transform: rotate(-180deg);
+    -webkit-transform: rotate(-180deg);
+    -o-transform: rotate(-180deg);
+    transform: rotate(-180deg);
+    opacity: 0;
+  }
+}
+
+@-moz-keyframes move {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  35% {
+    left: 41%;
+    -moz-transform: rotate(0deg);
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  65% {
+    left: 59%;
+    -moz-transform: rotate(0deg);
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    -moz-transform: rotate(-180deg);
+    transform: rotate(-180deg);
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes move {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  35% {
+    left: 41%;
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  65% {
+    left: 59%;
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    -webkit-transform: rotate(-180deg);
+    transform: rotate(-180deg);
+    opacity: 0;
+  }
+}
+
+@-o-keyframes move {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  35% {
+    left: 41%;
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  65% {
+    left: 59%;
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    -o-transform: rotate(-180deg);
+    transform: rotate(-180deg);
+    opacity: 0;
+  }
+}
 
 /* volume */
-#vol-initial{
-  padding: 0.3em 1.0em;
+#vol-initial {
+  padding: 0.3em 1em;
   margin: 0 2em;
   background-color: #1d3557;
   border: #457b9d solid 2px;
@@ -26,25 +206,22 @@ body {
   border-radius: 1.2em;
 }
 
-#vol-img{
+#vol-img {
   vertical-align: middle;
 }
 
-#vol-initial:hover{
+#vol-initial:hover {
   background-color: #a8dadc;
   color: #1d3557;
   transform: scale(1.1);
   opacity: 0.6;
 }
 
-
-
-
 /* initial-screen
 ------------------------------ */
 /* Game start時にJavaScriptから display:none; でScreenを非表示にする */
 #initial-screen {
-  display: block; /* <<<<<<<<<<<<<<<<<<<<================== display check */
+  display: none; /* <<<<<<<<<<<<<<<<<<<<================== display check */
   height: 100vh;
   color: #f1faee;
 }
@@ -60,11 +237,11 @@ body {
 
 .select-menu {
   text-align: center;
-  margin-top: 1.7em;
+  margin-top: 3em;
   position: relative;
 }
 
-#btn-menu{
+#btn-menu {
   padding: 0.3em 1.2em;
   margin: 0 2em;
   background-color: #1d3557;
@@ -80,7 +257,6 @@ body {
   opacity: 0.6;
 }
 
-
 /* rule expray
 -------------------------------- */
 
@@ -89,14 +265,14 @@ body {
   color: #f1faee;
 }
 
-.expray span{
+.expray span {
   font-weight: bold;
   font-size: 110%;
   color: #f1faee;
-  text-shadow: 3px 2px 2px #1d3557;
+  text-shadow: 3px 2px 2px #000;
 }
 
-.expray li{
+.expray li {
   color: #f1faee;
   text-align: center;
 }
@@ -109,7 +285,6 @@ body {
   font-weight: bold;
   text-shadow: 4px 3px 4px #000;
 }
-
 
 .more ul {
   margin: 16px;
@@ -144,7 +319,7 @@ body {
 
 /* gameStart
  ----------------------------------------  */
- .initial-main {
+.initial-main {
   text-align: center;
   margin: 5% 0;
   position: relative;
@@ -165,10 +340,6 @@ body {
   color: #1d3557;
   transform: scale(1.1);
 }
-
-
-
-
 
 /* main-screen
 ------------------------------ */
@@ -220,7 +391,6 @@ body {
   width: 85%;
   background-color: #000;
   vertical-align: bottom;
-
 }
 
 /* canvas */
@@ -246,20 +416,28 @@ body {
   vertical-align: top;
 }
 
-
 /* --- screen-canvas --- */
-
-
-
 
 /* ---------------- button set ------------------ */
 
-.btn-set{
+/* --- muteBtn --- */
+
+.btn-set {
   margin-top: 4em;
 }
 
+#main-vol{
+  padding: 0.4em;
+  margin-bottom: 4em;
+  margin-left: 2em;
+  background-color: #284b63;
+  color: #f1faee;
+  border: #457b9d double 5px;
+  border-radius: 1.1em;
+}
+
 #onStopBtn,
-#resetBtn {
+#resetBtn{
   padding: 0.7em;
   margin: 1.2em 1.1em;
   background-color: #284b63;
@@ -282,16 +460,14 @@ body {
   transform: scale(1.2);
 }
 
-
 /* responsive
  ------------------------------------------- */
-
-.responsive {
+#res-info {
   display: none;
 }
 
-@media (max-width: 500px) {
-  .responsive {
+@media (max-width: 768px) {
+  #res-info {
     color: #f1faee;
     display: block;
   }
@@ -299,31 +475,24 @@ body {
   /* HEADER */
 
   /* MAIN-CONTENT */
-  #main-screen {
+  /* #main-screen {
     height: 100vh;
     margin-top: 0;
     color: #1d3557;
     background-image: none;
     background-color: #000;
     min-height: 100vh;
-  }
+  } */
 
-  .responsive-operation{
+  .res-info-operation {
     text-align: center;
     margin-top: 2em;
   }
 
-  #key-center{
-    margin: 2em;
-  }
-
-  .responsive-operation img{
-    border-radius: 6em;
-  }
-
-  .btn-center{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  .res-info-operation button {
+    padding: 5em;
+    color: #284b63;
+    background-color: #f1faee;
+    border-radius: 50%;
   }
 }
