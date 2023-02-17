@@ -41,16 +41,16 @@
       <div class="more">
         <ul class="expray">
           <li class="rule-expray">ゲームのルール</li>
-          <li><span>Level</span> : 1〜7(MAX) </li>
+          <li><span>Level</span> : 1〜9(MAX) </li>
           <li><span>Score</span> : <br> 1列 40点<br> 2列 100点<br> 3列 400点<br> 4列 1200点 </li>
           <li><span>Next Stage</span> : <br> 3000 × LEVEL</li>
           <br>
           <li class="key-operation">キーボード操作の説明</li>
-          <li><span>Left</span> : ← </li>
-          <li><span>Right</span> : → </li>
-          <li><span>Stack</span> : ↑ </li>
-          <li><span>Down</span> : ↓ </li>
-          <li><span>Space</span> : HOLD</li>
+          <li><span>左</span> : ← </li>
+          <li><span>右</span> : → </li>
+          <li><span>ハードドロップ</span> : ↑ </li>
+          <li><span>ソフトドロップ</span> : ↓ </li>
+          <li><span>HOLD</span> : SPACE</li>
           <li><span>R</span> : 回転</li>
         </ul>
       </div>
@@ -83,6 +83,9 @@
       </div>
 
       <div class="info-right">
+        <div class="btn-sound">
+          <button id="main-vol" type="button" class="mute">BGM <img id="mute-img"></button>
+        </div>
         <div class="screen-canvas">
           <canvas id="canvas-side"></canvas>
         </div>
@@ -94,22 +97,24 @@
     </div>
 
     <!-- ========================== Compatible with smartphones ========================== -->
-    <div class="responsive">
-      <div class="responsive-operation">
-        <button type="button" id="arrow-up"><img src="img/arrow_up.jpg" width="40" height="40"></button>
+
+    <div id="res-info">
+
+      <div class="res-info-operation">
+        <h1>テストテストテストテスト</h1>
+        <button type="button" id="arrow-up">↑</button>
         <div class="btn-center">
-          <button type="button" id="arrow-left"><img src="img/arrow_left.jpg" width="40" height="40"></button>
-          <button type="button" id="key-center"><img src="img/R.png" width="50" height="50"></button>
-          <button type="button" id="arrow-right"><img src="img/arrow_right.jpg" width="40" height="40"></button>
+          <button type="button" id="arrow-left">←</button>
+          <button type="button" id="key-center">□</button>
+          <button type="button" id="arrow-right">→</button>
         </div>
-        <button type="button" id="arrow-under"><img src="img/arrow_under.jpg" width="40" height="40"></button>
+        <button type="button" id="arrow-under">↓</button>
       </div>
     </div>
   </div>
 
 
   <script type="text/javascript" src="tetris.js"></script>
-  <script src="http://code.jquery.com/jquery-latest.js"></script>
 </body>
 
 </html>
