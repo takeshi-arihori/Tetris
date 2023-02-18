@@ -226,13 +226,13 @@ body {
 }
 
 .initial-header h1 {
-  font-size: 3em;
+  font-size: 2em;
   text-align: center;
 }
 
 .select-menu {
   text-align: center;
-  margin-top: 3em;
+  margin-top: 2em;
   position: relative;
 }
 

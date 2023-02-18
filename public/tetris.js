@@ -33,8 +33,8 @@ btnMenu.addEventListener("click", () => {
 
 /* --- BGM --- */
 let initialPageOpeningSound = new Audio("sounds/opening_sound2.mp3");
-initialPageOpeningSound.volume = 0.7;
-let mainSound = new Audio("sounds/【TETRIS】Main_BGM メドレー 1 - from YouTube.mp3");
+initialPageOpeningSound.volume = 0.5;
+let mainSound = new Audio("sounds/game_start_sound.mp3");
 mainSound.volume = 0.4;
 let semiFinalStageSound = new Audio("sounds/semifinal_stage_main_sound.mp3");
 semiFinalStageSound.volume = 0.4;
