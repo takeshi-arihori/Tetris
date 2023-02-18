@@ -176,7 +176,7 @@ let interval;
 let over = false;
 
 // Game Speed
-let game_speed = 1000;
+let game_speed = 900;
 
 // Level
 let level = 1;
@@ -432,6 +432,7 @@ const resetButton = (e) => {
     onClearInterval();
   }
 
+  // リセットの再確認
   let res = confirm("本当に中断しますか？？");
   if (res) {
     // リセット
