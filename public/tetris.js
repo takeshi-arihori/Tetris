@@ -2,18 +2,18 @@
 
 /* =============================== Initial Screen =============================== */
 
+// initialPageとmainPageの取得
+let initial_screen = document.getElementById("initial-screen");
+let main_screen = document.getElementById("main-screen");
+
 /* --- loading画面 --- */
 window.addEventListener("load", () => {
   setTimeout(() => {
     initial_screen.style.display = "block";
     document.getElementById("load").style.display = "none";
+    document.addEventListener("dblclick", function (e) { e.preventDefault(); }, { passive: false });
   }, 4000);
 })
-
-
-// initialPageとmainPageの取得
-let initial_screen = document.getElementById("initial-screen");
-let main_screen = document.getElementById("main-screen");
 
 
 /* --- ゲーム説明 --- */
@@ -107,7 +107,22 @@ vol_initial.addEventListener("click", () => {
 }, false);
 
 
+/* --- オープニングの画像 --- */
+let mainScreenImg = document.getElementById("main-img");
 
+/* --- 時間帯によって画像を切り替える --- */
+const openingImg = (hour) => {
+  if (hour >= 6 && hour <= 18) {
+    mainScreenImg.src = "img/opening_day_time.jpg";
+  } else {
+    mainScreenImg.src = "img/opening_night_time.jpg";
+  }
+}
+
+let now = new Date();
+let hour = now.getHours();
+
+openingImg(hour);
 
 /* =============================== Main Screen =============================== */
 
@@ -291,7 +306,7 @@ const soundPlay = () => {
   }
 }
 
-/* --- メインサウンドプレイストップ --- */
+/* --- メインサウンドプレイをSTOP --- */
 const soundPause = () => {
   // ファイナルステージ
   if (game_speed == 100) {
@@ -332,7 +347,6 @@ const screenTransition = () => {
       // ステージクリア音
       stageClearSound.play();
     };
-    // <<<<<<<<<<<<<<<<<<<<<<<================================================  pop設定未定
     onClearInterval();
     interval = setInterval(dropTetro, game_speed);
   }
@@ -550,28 +564,34 @@ function drawAll() {
     }
   }
 
-  // Game over時の設定          <<<<<<<<<<<<<<<<<<<<<<<<<<============================= ここは変更必須
+  // Game over時の設定
   if (over) {
     let s = "GAME OVER";
-    context.font = "50px 'MSゴシック'";
+    context.font = "40px 'MSゴシック'";
     let w = context.measureText(s).width;
     let x = SCREEN_W / 2 - w / 2;
     let y = SCREEN_H / 2 - 20;
     context.lineWidth = 4;
     context.strokeText(s, x, y);
-    context.fillStyle = "white";
+    context.fillStyle = "red";
     context.fillText(s, x, y);
-    mainSound.pause();
-    semiFinalStageSound.pause();
-    finalStageSound.pause();
-    gameOverSound.play();
-  }
 
+    soundPause();
+    gameOverSound.play();
+
+    setTimeout(() => {
+      let res = confirm("ゲームを終了しますか？？");
+      if (res) {
+        // リセット
+        window.location.reload();
+      }
+    }, 4000);
+  }
 }
 
 
 /* --- ネクストテトロの表示 --- */
-function drawBlockNext(x, y, c) { // <==<<<<<<<<<<<<<<<======<<========== ネクストテトロ
+function drawBlockNext(x, y, c) {
   // ブロックサイズを代入
   let px = x * BLOCK_SIZE;
   let py = y * BLOCK_SIZE;
@@ -594,8 +614,6 @@ function drawAllSubScreen() {
   for (let y = 0; y < TETRO_SIZE; y++) {
     for (let x = 0; x < TETRO_SIZE; x++) {
       if (tetro_n_type[y][x]) {
-        console.log("x : " + x)
-        console.log("y : " + y)
         drawBlockNext(x, y, tetro_n);
       }
     }
@@ -613,7 +631,6 @@ function checkMove(mx, my, newTetro) {
       let ny = tetro_y + my + y;
 
       if (newTetro[y][x]) {
-        // テトロミノのフィールドスペースを制限 <<<<<<<<<<<<<=================== Tスピン、、、、
         if (
           ny < 0 ||
           nx < 0 ||
@@ -722,17 +739,42 @@ function dropTetro() {
 }
 
 
-/* --- Key Position --- */
+/* --- 画面スクロール禁止 --- */
+function handleTouchMove(event) {
+  event.preventDefault();
+}
+
+document.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+
+/* --- ボタンによる入力 (レスポンシブ対応) --- */
+document.getElementById("arrow-left").addEventListener("click", function () {
+  document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft" }));
+});
+document.getElementById("arrow-right").addEventListener("click", function () {
+  document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight" }));
+});
+document.getElementById("arrow-down").addEventListener("click", function () {
+  document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
+});
+document.getElementById("arrow-up").addEventListener("click", function () {
+  document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowUp" }));
+});
+document.getElementById("rotate-center").addEventListener("click", function () {
+  document.dispatchEvent(new KeyboardEvent("keydown", { key: "r" }));
+});
+
+
+/* --- PCによるキーポジション --- */
 document.addEventListener("keydown", (e) => {
   // GameOver時はreturn
   if (over) return;
 
-  // スペースの挙動がおかしいため使用不可に設定
-  if (e.key == " ") onStopButton();
-
   // Pause時キーボード操作無効
   if (!moveOn) {
     e.preventDefault();
+    // スペースの挙動がおかしいため使用不可に設定
+    if (e.key == " ") onStopButton();
     return;
   }
 
@@ -767,45 +809,7 @@ document.addEventListener("keydown", (e) => {
       }
       break;
   }
-
   // 全体表示
   drawAll();
 }, false);
-
-
-
-// /* ========================== Compatible with smartphones ========================== */
-
-// // stack(up)
-// document.getElementById("arrow-up").addEventListener("touchstart", () => {
-//   while (checkMove(0, 1)) tetro_y++;
-//   downKeySound.play();
-// });
-
-// // left
-// document.getElementById("arrow-left").addEventListener("touchstart", () => {
-//   if (checkMove(-1, 0)) tetro_x--;
-// });
-
-// // rotate
-// document.getElementById("key-center").addEventListener("touchstart", () => {
-//   let newTetro = rotate();
-//   // 回転できるかチェック
-//   if (checkMove(0, 0, newTetro)) tetro = newTetro;
-//   if (vol_flag) {
-//     rotateSound.pause();
-//     rotateSound.play();
-//   }
-//   console.log("rotate Soundおおおおおお ; " + vol_flag);
-// });
-
-// // right
-// document.getElementById("arrow-right").addEventListener("touchstart", () => {
-//   if (checkMove(1, 0)) tetro_x++;
-// });
-
-// // under
-// document.getElementById("arrow-under").addEventListener("touchstart", () => {
-//   if (checkMove(0, 1)) tetro_y++;
-// });
 
