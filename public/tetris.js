@@ -107,7 +107,24 @@ vol_initial.addEventListener("click", () => {
 }, false);
 
 
+/* --- オープニングの画像 --- */
+let mainScreenImg = document.getElementById("main-img");
+console.log(mainScreenImg);
 
+/* --- 時間帯によって画像を切り替える --- */
+const openingImg = (hour) => {
+  if (hour >= 6 && hour <= 18) {
+    mainScreenImg.src = "img/opening_day_time.jpg";
+    console.log(mainScreenImg.src);
+  } else {
+    mainScreenImg.src = "img/opening_night_time.jpg";
+  }
+}
+
+let now = new Date();
+let hour = now.getHours();
+
+openingImg(hour);
 
 /* =============================== Main Screen =============================== */
 
@@ -291,7 +308,7 @@ const soundPlay = () => {
   }
 }
 
-/* --- メインサウンドプレイストップ --- */
+/* --- メインサウンドプレイをSTOP --- */
 const soundPause = () => {
   // ファイナルステージ
   if (game_speed == 100) {
@@ -332,7 +349,6 @@ const screenTransition = () => {
       // ステージクリア音
       stageClearSound.play();
     };
-    // <<<<<<<<<<<<<<<<<<<<<<<================================================  pop設定未定
     onClearInterval();
     interval = setInterval(dropTetro, game_speed);
   }
@@ -550,28 +566,34 @@ function drawAll() {
     }
   }
 
-  // Game over時の設定          <<<<<<<<<<<<<<<<<<<<<<<<<<============================= ここは変更必須
+  // Game over時の設定
   if (over) {
     let s = "GAME OVER";
-    context.font = "50px 'MSゴシック'";
+    context.font = "40px 'MSゴシック'";
     let w = context.measureText(s).width;
     let x = SCREEN_W / 2 - w / 2;
     let y = SCREEN_H / 2 - 20;
     context.lineWidth = 4;
     context.strokeText(s, x, y);
-    context.fillStyle = "white";
+    context.fillStyle = "red";
     context.fillText(s, x, y);
-    mainSound.pause();
-    semiFinalStageSound.pause();
-    finalStageSound.pause();
-    gameOverSound.play();
-  }
 
+    soundPause();
+    gameOverSound.play();
+
+    setTimeout(() => {
+      let res = confirm("ゲームを終了しますか？？");
+      if (res) {
+        // リセット
+        window.location.reload();
+      }
+    }, 4000);
+  }
 }
 
 
 /* --- ネクストテトロの表示 --- */
-function drawBlockNext(x, y, c) { // <==<<<<<<<<<<<<<<<======<<========== ネクストテトロ
+function drawBlockNext(x, y, c) {
   // ブロックサイズを代入
   let px = x * BLOCK_SIZE;
   let py = y * BLOCK_SIZE;
@@ -613,7 +635,6 @@ function checkMove(mx, my, newTetro) {
       let ny = tetro_y + my + y;
 
       if (newTetro[y][x]) {
-        // テトロミノのフィールドスペースを制限 <<<<<<<<<<<<<=================== Tスピン、、、、
         if (
           ny < 0 ||
           nx < 0 ||

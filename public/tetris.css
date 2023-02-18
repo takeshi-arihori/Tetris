@@ -192,7 +192,6 @@ body {
   }
 }
 
-
 /* volume */
 #vol-initial {
   padding: 0.3em 1em;
@@ -253,7 +252,6 @@ body {
   opacity: 0.6;
 }
 
-
 /* ----- ゲームのルール説明 ------ */
 .more {
   display: none;
@@ -313,13 +311,13 @@ body {
 }
 
 /* ----- オープニング画像 ------ */
-.opening-img{
+.opening-img {
   text-align: center;
   position: relative;
   z-index: 1;
 }
 
-.opening-img img{
+.opening-img img {
   width: 50%;
   height: 50%;
 }
@@ -345,7 +343,6 @@ body {
   color: #1d3557;
   transform: scale(1.1);
 }
-
 
 /* ----- main-screen ----- */
 #main-screen {
@@ -419,7 +416,6 @@ body {
   vertical-align: top;
 }
 
-
 /* ----- muteBtn ----- */
 .btn-set {
   margin-top: 4em;
@@ -459,39 +455,36 @@ body {
   transform: scale(1.2);
 }
 
-
-
 /* ----- responsive ------ */
 @media (max-width: 768px) {
-
-  #main-screen{
+  #main-screen {
     width: 100vw;
     height: 100vh;
     background-color: #adb5bd;
     background-image: none;
   }
 
-  .wrapper{
+  .wrapper {
     font-size: 60%;
     padding: 1.5em;
   }
 
-  .drawInfo{
+  .drawInfo {
     margin-top: 1em;
     padding: 1em 1.5em;
   }
 
-  .main-contents{
+  .main-contents {
     border-radius: 0.6em;
   }
 
-  #canvas{
+  #canvas {
     margin-left: 2.5em;
     width: 100%;
     height: 100%;
   }
 
-  #canvas-side{
+  #canvas-side {
     margin-right: 2em;
     width: 80%;
     height: 80%;
@@ -504,13 +497,27 @@ body {
   .res-controller {
     display: flex;
     justify-content: space-around;
-  }
-
-  .res-controller {
     text-align: center;
     margin-top: 2em;
   }
 
+  /* --- button --- */
+  .res-controller button {
+    display: inline-block;
+    background-color: rgb(55, 71, 79);
+    padding: 15px 25px;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0 5px rgb(37, 49, 55);
+  }
+
+  .res-controller button:active {
+    box-shadow: none;
+    position: relative;
+    top: 5px;
+  }
 
   /* --- controller 左 (回転) --- */
   .con-left {
@@ -524,7 +531,6 @@ body {
     background-color: #284b63;
     border-radius: 50%;
   }
-
 
   /* --- controller 右 --- */
   .grid {
