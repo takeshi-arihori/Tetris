@@ -2,18 +2,18 @@
 
 /* =============================== Initial Screen =============================== */
 
+// initialPageとmainPageの取得
+let initial_screen = document.getElementById("initial-screen");
+let main_screen = document.getElementById("main-screen");
+
 /* --- loading画面 --- */
 window.addEventListener("load", () => {
   setTimeout(() => {
     initial_screen.style.display = "block";
     document.getElementById("load").style.display = "none";
+    document.addEventListener("dblclick", function (e) { e.preventDefault(); }, { passive: false });
   }, 4000);
 })
-
-
-// initialPageとmainPageの取得
-let initial_screen = document.getElementById("initial-screen");
-let main_screen = document.getElementById("main-screen");
 
 
 /* --- ゲーム説明 --- */
@@ -722,17 +722,42 @@ function dropTetro() {
 }
 
 
-/* --- Key Position --- */
+/* --- 画面スクロール禁止 --- */
+function handleTouchMove(event) {
+  event.preventDefault();
+}
+
+document.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+
+/* --- ボタンによる入力 (レスポンシブ対応) --- */
+document.getElementById("arrow-left").addEventListener("click", function () {
+  document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft" }));
+});
+document.getElementById("arrow-right").addEventListener("click", function () {
+  document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight" }));
+});
+document.getElementById("arrow-down").addEventListener("click", function () {
+  document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
+});
+document.getElementById("arrow-up").addEventListener("click", function () {
+  document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowUp" }));
+});
+document.getElementById("rotate-center").addEventListener("click", function () {
+  document.dispatchEvent(new KeyboardEvent("keydown", { key: "r" }));
+});
+
+
+/* --- PCによるキーポジション --- */
 document.addEventListener("keydown", (e) => {
   // GameOver時はreturn
   if (over) return;
 
-  // スペースの挙動がおかしいため使用不可に設定
-  if (e.key == " ") onStopButton();
-
   // Pause時キーボード操作無効
   if (!moveOn) {
     e.preventDefault();
+    // スペースの挙動がおかしいため使用不可に設定
+    if (e.key == " ") onStopButton();
     return;
   }
 
@@ -767,45 +792,7 @@ document.addEventListener("keydown", (e) => {
       }
       break;
   }
-
   // 全体表示
   drawAll();
 }, false);
-
-
-
-// /* ========================== Compatible with smartphones ========================== */
-
-// // stack(up)
-// document.getElementById("arrow-up").addEventListener("touchstart", () => {
-//   while (checkMove(0, 1)) tetro_y++;
-//   downKeySound.play();
-// });
-
-// // left
-// document.getElementById("arrow-left").addEventListener("touchstart", () => {
-//   if (checkMove(-1, 0)) tetro_x--;
-// });
-
-// // rotate
-// document.getElementById("key-center").addEventListener("touchstart", () => {
-//   let newTetro = rotate();
-//   // 回転できるかチェック
-//   if (checkMove(0, 0, newTetro)) tetro = newTetro;
-//   if (vol_flag) {
-//     rotateSound.pause();
-//     rotateSound.play();
-//   }
-//   console.log("rotate Soundおおおおおお ; " + vol_flag);
-// });
-
-// // right
-// document.getElementById("arrow-right").addEventListener("touchstart", () => {
-//   if (checkMove(1, 0)) tetro_x++;
-// });
-
-// // under
-// document.getElementById("arrow-under").addEventListener("touchstart", () => {
-//   if (checkMove(0, 1)) tetro_y++;
-// });
 

@@ -15,11 +15,7 @@ body {
   margin: 0 auto;
 }
 
-/* ================ loaded screen ============== */
-
-.initial-screen {
-  display: block;
-}
+/* ----- ロード画面 ----- */
 
 #load {
   position: absolute;
@@ -196,6 +192,7 @@ body {
   }
 }
 
+
 /* volume */
 #vol-initial {
   padding: 0.3em 1em;
@@ -217,11 +214,10 @@ body {
   opacity: 0.6;
 }
 
-/* initial-screen
------------------------------- */
-/* Game start時にJavaScriptから display:none; でScreenを非表示にする */
+/* ----- initial-screen ------ */
+/* ロード画面終了時に切り替え */
 #initial-screen {
-  display: none; /* <<<<<<<<<<<<<<<<<<<<================== display check */
+  display: none;
   height: 100vh;
   color: #f1faee;
 }
@@ -257,9 +253,8 @@ body {
   opacity: 0.6;
 }
 
-/* rule expray
--------------------------------- */
 
+/* ----- ゲームのルール説明 ------ */
 .more {
   display: none;
   color: #f1faee;
@@ -317,11 +312,21 @@ body {
   }
 }
 
-/* gameStart
- ----------------------------------------  */
+/* ----- オープニング画像 ------ */
+.opening-img{
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.opening-img img{
+  width: 50%;
+  height: 50%;
+}
+
+/* ----- ゲームスタートボタン ------ */
 .initial-main {
   text-align: center;
-  margin: 5% 0;
   position: relative;
   z-index: 1;
 }
@@ -341,12 +346,10 @@ body {
   transform: scale(1.1);
 }
 
-/* main-screen
------------------------------- */
 
-/* Game start時にJavaScriptから display:block; でScreenを表示させる */
+/* ----- main-screen ----- */
 #main-screen {
-  display: none; /* <<<<<<<<<<<<<<<<<<<<================== display check */
+  display: none;
   height: 100vh;
   margin-top: 0;
   color: #1d3557;
@@ -416,17 +419,13 @@ body {
   vertical-align: top;
 }
 
-/* --- screen-canvas --- */
 
-/* ---------------- button set ------------------ */
-
-/* --- muteBtn --- */
-
+/* ----- muteBtn ----- */
 .btn-set {
   margin-top: 4em;
 }
 
-#main-vol{
+#main-vol {
   padding: 0.4em;
   margin-bottom: 4em;
   margin-left: 2em;
@@ -437,7 +436,7 @@ body {
 }
 
 #onStopBtn,
-#resetBtn{
+#resetBtn {
   padding: 0.7em;
   margin: 1.2em 1.1em;
   background-color: #284b63;
@@ -460,39 +459,88 @@ body {
   transform: scale(1.2);
 }
 
-/* responsive
- ------------------------------------------- */
-#res-info {
-  display: none;
-}
 
+
+/* ----- responsive ------ */
 @media (max-width: 768px) {
-  #res-info {
-    color: #f1faee;
-    display: block;
+
+  #main-screen{
+    width: 100vw;
+    height: 100vh;
+    background-color: #adb5bd;
+    background-image: none;
   }
 
-  /* HEADER */
+  .wrapper{
+    font-size: 60%;
+    padding: 1.5em;
+  }
 
-  /* MAIN-CONTENT */
-  /* #main-screen {
-    height: 100vh;
-    margin-top: 0;
-    color: #1d3557;
-    background-image: none;
-    background-color: #000;
-    min-height: 100vh;
-  } */
+  .drawInfo{
+    margin-top: 1em;
+    padding: 1em 1.5em;
+  }
 
-  .res-info-operation {
+  .main-contents{
+    border-radius: 0.6em;
+  }
+
+  #canvas{
+    margin-left: 2.5em;
+    width: 100%;
+    height: 100%;
+  }
+
+  #canvas-side{
+    margin-right: 2em;
+    width: 80%;
+    height: 80%;
+  }
+
+  #responsive-screen {
+    color: #f1faee;
+  }
+
+  .res-controller {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .res-controller {
     text-align: center;
     margin-top: 2em;
   }
 
-  .res-info-operation button {
-    padding: 5em;
+
+  /* --- controller 左 (回転) --- */
+  .con-left {
+    display: grid;
+    align-items: center;
+  }
+
+  .con-left button {
+    padding: 40px;
+    color: #f1faee;
+    background-color: #284b63;
+    border-radius: 50%;
+  }
+
+
+  /* --- controller 右 --- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .con-right button {
+    padding: 20px;
+    margin: -15px;
     color: #284b63;
     background-color: #f1faee;
     border-radius: 50%;
+  }
+
+  .item {
+    padding: 20px;
   }
 }

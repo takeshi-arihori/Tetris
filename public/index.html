@@ -4,6 +4,7 @@
 <head>
 
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>TETRIS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,9 +15,7 @@
 </head>
 
 <body>
-  <!--=================== loading =====================-->
-
-  <!-- ローディング画面 -->
+  <!------- ローディング画面 -------->
   <div id="load">
     <div>G</div>
     <div>N</div>
@@ -27,8 +26,8 @@
     <div>L</div>
   </div>
 
-  <!--================ Initial Screen ===================-->
 
+  <!------- オープニング画面 ------->
   <div id="initial-screen">
     <header class="initial-header wrapper">
       <h1><img src="img/tetrisHead_initialPage.png" alt="tetris画像(文字)"></h1>
@@ -55,6 +54,10 @@
         </ul>
       </div>
     </header>
+
+    <div class="opening-img">
+      <img src="img/opening_daytime.jpg" alt="メイン画像です" width="1509" height="911">
+    </div>
     <div class="initial-main">
       <div>
         <button type="button" id="gameStart">GAME START</button>
@@ -62,9 +65,7 @@
     </div>
   </div>
 
-
-
-  <!--=================== Main Screen (Displayed at game start) ====================-->
+  <!------- メイン画面 ------->
   <div id="main-screen">
     <header class="main-header wrapper">
       <div class="drawInfo">
@@ -77,7 +78,6 @@
     </header>
 
     <div class="main-contents wrapper">
-
       <div class="info-left">
         <canvas id="canvas"></canvas>
       </div>
@@ -96,24 +96,43 @@
       </div>
     </div>
 
-    <!-- ========================== Compatible with smartphones ========================== -->
 
-    <div id="res-info">
 
-      <div class="res-info-operation">
-        <h1>テストテストテストテスト</h1>
-        <button type="button" id="arrow-up">↑</button>
-        <div class="btn-center">
-          <button type="button" id="arrow-left">←</button>
-          <button type="button" id="key-center">□</button>
-          <button type="button" id="arrow-right">→</button>
+    <!-------- レスポンシブに対応 -------->
+
+    <div id="responsive-screen">
+      <div class="res-controller">
+
+        <!-- LEFT側 -->
+        <div class="con-left">
+          <button type="button" id="rotate-center">□</button>
         </div>
-        <button type="button" id="arrow-under">↓</button>
+
+        <!-- RIGHT側(gridで範囲設定) -->
+        <div class="con-right">
+          <div class="grid wrap">
+            <div class="item"></div>
+            <div class="item">
+              <button type="button" id="arrow-up">↑</button>
+            </div>
+            <div class="item"></div>
+            <div class="item">
+              <button type="button" id="arrow-left">←</button>
+            </div>
+            <div class="item"></div>
+            <div class="item">
+              <button type="button" id="arrow-right">→</button>
+            </div>
+            <div class="item"></div>
+            <div class="item">
+              <button type="button" id="arrow-down">↓</button>
+            </div>
+            <div class="item"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
-
   <script type="text/javascript" src="tetris.js"></script>
 </body>
 
