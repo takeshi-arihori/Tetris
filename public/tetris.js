@@ -126,6 +126,9 @@ const FIELD_ROW = 20;
 const SCREEN_W = BLOCK_SIZE * FIELD_COL;
 const SCREEN_H = BLOCK_SIZE * FIELD_ROW;
 
+// サブスクリーンのフィールドの大きさを定義
+const SUB_SCREEN = BLOCK_SIZE * TETRO_SIZE;
+
 // フィールド ({FIELD_COL * FIELD_ROW} を格納する配列)
 let field = [];
 
@@ -146,8 +149,8 @@ canvas.style.border = "4px ridge #a8dadc";
 let screen_can = document.getElementById("canvas-side");
 let screen_con = screen_can.getContext('2d');
 
-screen_can.width = SCREEN_W / 2;
-screen_can.height = SCREEN_W / 2;
+screen_can.width = SUB_SCREEN;
+screen_can.height = SUB_SCREEN;
 screen_can.style.border = "3mm ridge #1d3557";
 
 
@@ -176,7 +179,7 @@ let interval;
 let over = false;
 
 // Game Speed
-let game_speed = 1000;
+let game_speed = 900;
 
 // Level
 let level = 1;
@@ -334,7 +337,7 @@ const screenTransition = () => {
     interval = setInterval(dropTetro, game_speed);
   }
   // ゲームスピードに応じてサウンドを変化
-  if(vol_flag){
+  if (vol_flag) {
     soundPlay();
   }
 }
@@ -356,8 +359,8 @@ function displayBlock(ele) {
 document.getElementById("gameStart").addEventListener('click', () => {
   displayNone(initial_screen);
   displayBlock(main_screen);
-
   initialPageOpeningSound.pause();
+
   if (vol_flag) {
     soundPlay();
   }
@@ -382,7 +385,7 @@ const onSetInterval = () => {
 
 
 // ストップ or リスタート フラグ
-let stopOrRestart = true;
+let moveOn = true;
 
 /* --- ゲームリスタート・ストップ --- */
 let onStopBtn = document.getElementById("onStopBtn");
@@ -396,17 +399,17 @@ const onStopButton = () => {
     pauseSelectSound.play();
   }
 
-  if (stopOrRestart == true) {
+  if (moveOn == true) {
     onClearInterval();
     soundPause();
     document.getElementById("onStopBtn").innerHTML = "RESTART";
-    stopOrRestart = false;
+    moveOn = false;
   }
   else {
     onClearInterval();
     onSetInterval();
     document.getElementById("onStopBtn").innerHTML = "PAUSE";
-    stopOrRestart = true;
+    moveOn = true;
     if (vol_flag) {
       soundPlay();
     }
@@ -432,6 +435,7 @@ const resetButton = (e) => {
     onClearInterval();
   }
 
+  // リセットの再確認
   let res = confirm("本当に中断しますか？？");
   if (res) {
     // リセット
@@ -453,7 +457,7 @@ const main_vol = document.getElementById("main-vol");
 const mute_img = document.getElementById("mute-img");
 
 main_vol.addEventListener("click", () => {
-  if(vol_flag){
+  if (vol_flag) {
     soundPause();
     vol_flag = false;
   } else {
@@ -481,7 +485,6 @@ function init() {
   tetro_n = Math.floor(Math.random() * (TETRO_TYPES.length - 1)) + 1;
   setTetro();
   drawAll();
-  nextTetro(); // <<<<<<<<<<<<<<<=============================================== setteityuu
   interval = setInterval(dropTetro, game_speed);
 }
 
@@ -490,13 +493,15 @@ function init() {
 function setTetro() {
   // 次のテトロタイプのインデックス
   tetro_t = tetro_n;
-  // テトロタイプから配列を取得
+  // テトロタイプからテトロミノの2次元配列を取得
   tetro = TETRO_TYPES[tetro_t];
   // 次のテトロタイプのインデックスを生成
   tetro_n = Math.floor(Math.random() * (TETRO_TYPES.length - 1)) + 1;
   // テトロミノの落下地点の座標
   tetro_x = START_X;
   tetro_y = START_Y;
+  // 次のテトロミノをサブスクリーンに描画
+  drawAllSubScreen();
 }
 
 /* --- テトリミノを生成 --- */
@@ -513,7 +518,6 @@ function drawBlock(x, y, c) {
 }
 
 
-
 /* --- フィールドの描画 --- */
 function drawAll() {
   // フィールドをクリアにする
@@ -522,8 +526,9 @@ function drawAll() {
   /* --- フィールド全体の描画 --- */
   for (let y = 0; y < FIELD_ROW; y++) {
     for (let x = 0; x < FIELD_COL; x++) {
-      // フィールド上にテトロミノが存在するかチェック
+      // フィールド上を全て確認して存在するテトロミノを描画
       if (field[y][x]) {
+        // テトロミノが存在する座標 x, y と、テトロミノのタイプのインデックスを渡す
         drawBlock(x, y, field[y][x]);
       }
     }
@@ -545,7 +550,7 @@ function drawAll() {
     }
   }
 
-  // Game over時の設定
+  // Game over時の設定          <<<<<<<<<<<<<<<<<<<<<<<<<<============================= ここは変更必須
   if (over) {
     let s = "GAME OVER";
     context.font = "50px 'MSゴシック'";
@@ -565,13 +570,39 @@ function drawAll() {
 }
 
 
-/* --- ネクストテトロ --- */
-const nextTetro = () => {
-  console.log("next")
+/* --- ネクストテトロの表示 --- */
+function drawBlockNext(x, y, c) { // <==<<<<<<<<<<<<<<<======<<========== ネクストテトロ
+  // ブロックサイズを代入
+  let px = x * BLOCK_SIZE;
+  let py = y * BLOCK_SIZE;
+
+  screen_con.fillStyle = TETRO_COLORS[c];
+  screen_con.fillRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
+
+  screen_con.strokeStyle = "#f1faee";
+  screen_con.strokeRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
 }
 
+/* --- サブスクリーンの描画 --- */
+function drawAllSubScreen() {
+  // サブスクリーンをクリア
+  screen_con.clearRect(0, 0, SUB_SCREEN, SUB_SCREEN);
+  // ネクストテトロのインデックスをテトロタイプに渡し、2次元配列を取得
+  let tetro_n_type = TETRO_TYPES[tetro_n];
 
-// ブロック衝突判定
+  // テトロミノを描画
+  for (let y = 0; y < TETRO_SIZE; y++) {
+    for (let x = 0; x < TETRO_SIZE; x++) {
+      if (tetro_n_type[y][x]) {
+        console.log("x : " + x)
+        console.log("y : " + y)
+        drawBlockNext(x, y, tetro_n);
+      }
+    }
+  }
+}
+
+/* --- ブロック衝突判定 --- */
 function checkMove(mx, my, newTetro) {
 
   if (newTetro === undefined) newTetro = tetro;
@@ -598,7 +629,7 @@ function checkMove(mx, my, newTetro) {
   return true;
 }
 
-// テトロミノ回転
+/* --- テトロミノ回転 --- */
 function rotate() {
   let ntetro = [];
   for (let y = 0; y < TETRO_SIZE; y++) {
@@ -610,7 +641,7 @@ function rotate() {
   return ntetro;
 }
 
-// 最下部に到達時点でテトロミノ固定
+/* --- 最下部に到達時点でテトロミノ固定 --- */
 function fixTetro() {
   for (let y = 0; y < TETRO_SIZE; y++) {
     for (let x = 0; x < TETRO_SIZE; x++) {
@@ -622,7 +653,7 @@ function fixTetro() {
 }
 
 
-// ラインが揃ったかチェックして消す
+/* --- ラインが揃ったかチェックして消す --- */
 function checkLine() {
   // ラインを消した数をカウント(スコアの計算)
   let lineCount = 0;
@@ -652,22 +683,24 @@ function checkLine() {
     }
   }
 
+  // ライン削除された場合
   if (lineCount) {
     // lineを消した数をcount
     deleteLine += lineCount;
     // scoreの計算
     scoreCount += scoreList[lineCount];
-    if(vol_flag){
+    if (vol_flag) {
       deleteBlockSound.play();
     }
   }
+
   // score-displayの更新
   screenTransition();
 }
 
 
 
-// テトロミノの落下処理
+/* --- テトロミノの落下処理 --- */
 function dropTetro() {
 
   if (over) return;
@@ -685,23 +718,21 @@ function dropTetro() {
 
     if (!checkMove(0, 0)) over = true;
   }
-
   drawAll();
 }
 
 
-
-/* ========================= Key Position ========================== */
-
-
-document.onkeydown = (e) => {
+/* --- Key Position --- */
+document.addEventListener("keydown", (e) => {
   // GameOver時はreturn
   if (over) return;
 
+  // スペースの挙動がおかしいため使用不可に設定
+  if (e.key == " ") onStopButton();
+
   // Pause時キーボード操作無効
-  if (!stopOrRestart) {
+  if (!moveOn) {
     e.preventDefault();
-    if (e.key == " ") onStopButton();
     return;
   }
 
@@ -733,15 +764,13 @@ document.onkeydown = (e) => {
       if (vol_flag) {
         rotateSound.pause();
         rotateSound.play();
-        console.log("rotate Soundおおおおおお ; " + vol_flag);
       }
       break;
   }
 
   // 全体表示
   drawAll();
-};
-
+}, false);
 
 
 
