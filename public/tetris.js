@@ -109,13 +109,11 @@ vol_initial.addEventListener("click", () => {
 
 /* --- オープニングの画像 --- */
 let mainScreenImg = document.getElementById("main-img");
-console.log(mainScreenImg);
 
 /* --- 時間帯によって画像を切り替える --- */
 const openingImg = (hour) => {
   if (hour >= 6 && hour <= 18) {
     mainScreenImg.src = "img/opening_day_time.jpg";
-    console.log(mainScreenImg.src);
   } else {
     mainScreenImg.src = "img/opening_night_time.jpg";
   }
@@ -616,8 +614,6 @@ function drawAllSubScreen() {
   for (let y = 0; y < TETRO_SIZE; y++) {
     for (let x = 0; x < TETRO_SIZE; x++) {
       if (tetro_n_type[y][x]) {
-        console.log("x : " + x)
-        console.log("y : " + y)
         drawBlockNext(x, y, tetro_n);
       }
     }
