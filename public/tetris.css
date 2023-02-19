@@ -457,6 +457,7 @@ body {
 
 /* ----- responsive ------ */
 @media (max-width: 768px) {
+
   #main-screen {
     width: 100vw;
     height: 100vh;
@@ -475,8 +476,13 @@ body {
     padding: 1em 1.5em;
   }
 
+
   .main-contents {
     border-radius: 0.6em;
+  }
+
+  .info-right{
+    margin-top: 1em;
   }
 
   #canvas {
@@ -487,8 +493,13 @@ body {
 
   #canvas-side {
     margin-right: 2em;
+    margin-top: -2em;
     width: 80%;
     height: 80%;
+  }
+
+  .btn-set {
+    margin-top: 0;
   }
 
   #responsive-screen {
@@ -506,7 +517,6 @@ body {
   .res-controller button {
     display: inline-block;
     background-color: rgb(55, 71, 79);
-    padding: 15px 25px;
     color: #fff;
     text-align: center;
     cursor: pointer;
