@@ -466,14 +466,14 @@ body {
   }
 
   .wrapper {
-    font-size: 60%;
+    font-size: 50%;
     padding: 1.5em;
     margin-top: 0;
   }
 
   .drawInfo {
-    margin-top: 1em;
-    padding: 1em 1.5em;
+    padding: 0 1.5em;
+    margin-top: -1em;
   }
 
 
