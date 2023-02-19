@@ -312,7 +312,7 @@ const soundPlay = () => {
   // セミファイナルステージ
   }
   else if (game_speed <= 200) {
-    BGM_STAGE_TO_2.pause();
+    BGM_STAGE_TO_7.pause();
     BGM_STAGE_8.play();
     BGM_STAGE_8.loop = true
   }
