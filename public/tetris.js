@@ -41,14 +41,16 @@ const BGM_STAGE_TO_2 = new Audio("sounds/tetris_bgm_stage_1.m4a");
 BGM_STAGE_TO_2.volume = 0.3;
 // メインサウンド(Stage3-4)
 const BGM_STAGE_TO_4 = new Audio("sounds/tetris_bgm_stage_2.m4a");
+BGM_STAGE_TO_4.volume = 0.3;
 // メインサウンド(Stage5-7)
 const BGM_STAGE_TO_7 = new Audio("sounds/tetris_bgm_stage_3.m4a");
+BGM_STAGE_TO_7.volume = 0.3;
 // メインサウンド(Stage8)
 const BGM_STAGE_8 = new Audio("sounds/semifinal_stage_main_sound.mp3");
-BGM_STAGE_8.volume = 0.4;
+BGM_STAGE_8.volume = 0.3;
 // メインサウンド(Stage9)
 const BGM_FINAL_STAGE_9 = new Audio("sounds/final_stage_main_sound.mp3");
-BGM_FINAL_STAGE_9.volume = 0.4;
+BGM_FINAL_STAGE_9.volume = 0.3;
 // ステージクリアサウンド
 const BGM_STAGE_CLEAR = new Audio("sounds/stage_clear.mp3");
 
@@ -338,16 +340,23 @@ const soundPlay = () => {
 
 /* --- メインサウンドプレイをSTOP --- */
 const soundPause = () => {
-  // ファイナルステージ
-  if (game_speed == 100) {
+  if (game_speed <= 100) {
     BGM_FINAL_STAGE_9.pause();
-    // セミファイナルステージ
+  // セミファイナルステージ
   }
-  else if (game_speed == 200) {
+  else if (game_speed <= 200) {
     BGM_STAGE_8.pause();
   }
+  // ステージ5-7
+  else if (game_speed <= 500) {
+    BGM_STAGE_TO_7.pause();
+  }
+  // ステージ3-4
+  else if (game_speed <= 700) {
+    BGM_STAGE_TO_4.pause();
+  }
+  // ステージ1-2
   else {
-    // その他のステージ
     BGM_STAGE_TO_2.pause();
   }
 }
