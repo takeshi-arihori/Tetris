@@ -6,12 +6,17 @@ name: Deploy Tetris
   push:
     branches:
       - ' develop'
+  pull-request:
+    branches:
+      - ' tetris'
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: npm run build
+      - run: npm install -g bats
+      - run: bats -v
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
