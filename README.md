@@ -13,12 +13,16 @@
   
 <img width="700" height="500" alt="テトリスオープニング画像" src="https://user-images.githubusercontent.com/83809409/219990097-b3df0faf-8a8b-4d28-8b2a-507b33f17d0d.png">   
   
-## プレイ動画
+## プレイ動画  
 
-https://user-images.githubusercontent.com/83809409/220042723-377e366f-35da-4ba4-9383-1922b44aa304.mov  
+https://user-images.githubusercontent.com/83809409/224547418-149b7143-ad1e-4a52-a790-e191a58cca12.mp4
+
+## プレイ中の動画  
+
+https://user-images.githubusercontent.com/83809409/224547796-b0d86fd7-f43d-4106-a7cf-49537393bb62.mp4
+
   
   
-
 ## 基本ルール
 
 ・ 10 × 20 のフィールド  
