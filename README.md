@@ -1,6 +1,6 @@
 # Tetris
+HTML・CSS・JavaScriptを使ってテトリスを作成しました。  
 
-### HTML・CSS・JavaScriptを使ってテトリスを作成しました。
 <p align="left">
   <a href="https://github.com/takeshi-arihori/Tetris/">
     <img src="https://komarev.com/ghpvc/?username=takeshi-arihori" alt="takeshi-arihori" />
